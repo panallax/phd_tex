@@ -1,0 +1,17 @@
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.gz
+*.bib
+*.bbl
+*.blg
+*.synctex.gz
+*.out
+*.xml
+/images/*.pdf
+*.pdf
+/out/*.pdf
+.vscode
+/svg-inkscape
+*.sh

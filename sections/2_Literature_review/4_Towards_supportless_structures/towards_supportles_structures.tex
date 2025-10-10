@@ -1,0 +1,29 @@
+\documentclass[../../../main.tex]{subfiles}
+\begin{document}  
+
+Despite the abundance of studies on regular and stochastic scaffolds, very few have explicitly focused on the geometric self-support of porous structures. In most of the papers reviewed, the issue of support material is addressed as a secondary optimisation phase or as a post-processing step \cite{ZHAO2019107550}, choice of printing parameters, so), but it is rarely integrated from the design phase onwards.
+Some preliminary studies have explored minimum angle constraints in periodic or hybrid structures to facilitate printing without supports \cite{CARNEIRO2020101085, WANG2020101566}, but these approaches are often limited to regular or semi-regular designs \cite{ma15227954}. 
+In the field of stochastic scaffolds, the literature is even scarcer: although there are proposals to generate geometries inspired by Voronoi or micro-CT, few consider explicit self-support criteria in their design algorithm \cite{ALSHEGHRI2021112010, Abdullahi2019}.
+ 
+Very few studies take into account the self-supporting nature of the structure from the design stage onwards.
+Zhao et al. \cite{ZHAO2019107550} propose a method based on topological optimisation, where they apply post-processing to the obtained geometry so that it can be printed without support material.
+These works do not fall within the scope of tissue engineering but rather create self-supporting structures with holes. 
+However, these structures cannot be considered porous as they do not have a network of interconnected pores. 
+They have holes that are the result of topological optimisation.
+Martínez et al. \cite{30729593073638} generate orthotropic foam-like structures and make them self-supported by removing the parts that exceed the maximum overhang angle.
+Hossain et al. \cite{HOSSAIN2021101849} generate random lattice structures using Rhinoceros 5.0 (TLM, Inc., Canada) by generating random points inside a volume and linking them. And then, the struts with an angle smaller than 25$^\circ$ are split into two parts of at least 25$^\circ$.
+Wang et al. \cite{WANG2020101566} design regular self-supported structures using SolidWorks (Dassault Systèmes, France) by generating a self-supported unit cell.
+Only the work proposed by Wu et al. \cite{7829422} focuses on optimising the filling of bone-like volumes so that they are self-supporting, but it does not consider self-support as a design parameter, only presenting structures that are mentioned as having been printed without support. 
+However, this does not imply that other designs can also be printed without support.
+
+Several recent articles have focused on the importance of self-supporting structures and have proposed printing methods without support structures by using support baths in which to print the structures \cite{Raja2023, Utami2025, ALBERT2022e00242}. 
+These baths are cell-friendly hydrogels that can then be removed, although this methodology is limited to the use of ceramic bio-inks.
+Other articles mention that they have printed their structures without support, but this is because they have used printing techniques where the piece is immersed in a material, such as powder or resin, which acts as a support itself. 
+However, this does not guarantee that another design will not require support, even when using these technologies \cite{polym16142027}.
+
+This gap is particularly critical, as the printing of stochastic structures is often the most prone to generating overhangs, intersections, and problematic geometries. 
+The absence of a methodological framework that integrates stochasticity and self-support is one of the main current limitations in the field of bone scaffolds. 
+Therefore, developing design strategies that produce intrinsically self-supporting stochastic porous structures, capable of reproducing the biological advantages of trabecular bone without the need for printing supports, represents an area of research with great potential and the main gap that this thesis aims to address.
+
+
+\end{document}

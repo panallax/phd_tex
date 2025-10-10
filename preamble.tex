@@ -1,0 +1,114 @@
+\usepackage{graphicx}
+\usepackage{amsmath}
+\setcounter{MaxMatrixCols}{12}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{float}
+\usepackage{epstopdf}
+\usepackage{svg}
+\usepackage[a4paper,width=150mm,top=25mm,bottom=25mm]{geometry}
+\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,factor=1100,stretch=10,shrink=10]{microtype}
+\usepackage{hyperref}
+\usepackage{optidef}
+\usepackage{import}
+\usepackage{verbatim}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{array}
+\usepackage{pgfplots}
+\definecolor{keywordcolor}{RGB}{139,0,255}     % fuerte violeta
+\definecolor{basecolor}{RGB}{0,102,204}        % azul claro
+\definecolor{functioncolor}{RGB}{255,172,0}    % amarillo fuerte
+\definecolor{commentcolor}{RGB}{0,180,0}       % verde brillante
+\definecolor{numbercolor}{RGB}{180,180,0}      % verde amarillento
+\definecolor{symbolcolor}{RGB}{0,0,0}          % negro para símbolos
+\definecolor{typecolor}{RGB}{0,180,180}        % verde turquesa
+\definecolor{bgcolor}{RGB}{245,248,255}
+
+\lstdefinestyle{customdark}{
+    backgroundcolor=\color{bgcolor},
+    basicstyle=\ttfamily\color{basecolor}\footnotesize,
+    keywordstyle=\color{keywordcolor}\bfseries,
+    identifierstyle=\color{basecolor},
+    commentstyle=\color{commentcolor},
+    stringstyle=\color{typecolor},
+    numbers=left,
+    numbersep=8pt,
+    stepnumber=1,
+    showstringspaces=false,
+     numberstyle=\tiny\color{black},
+    breaklines=false,
+    rulecolor=\color{black},
+    frame=single,
+    tabsize=4,
+    captionpos=b,
+    language=Python,
+    morekeywords=[2]{parent},
+    keywordstyle=[2]\color{basecolor},
+    emph={list, str, dict, int, float, set},
+    emphstyle=\color{typecolor},
+    emph=[2]{find, union, append, group\_segments, values},
+    emphstyle=[2]\color{functioncolor},
+    literate=
+      {:}{{\textcolor{symbolcolor}{:}}}1
+      {=}{{\textcolor{symbolcolor}{=}}}1
+      {.}{{\textcolor{symbolcolor}{.}}}1
+      {(}{{\textcolor{symbolcolor}{(}}}1
+      {()}{{\textcolor{symbolcolor}{()}}}1
+      {)}{{\textcolor{symbolcolor}{)}}}1
+      {[}{{\textcolor{symbolcolor}{[}}}1
+      {]}{{\textcolor{symbolcolor}{]}}}1
+      {|}{{\textcolor{symbolcolor}{|}}}1
+      {,}{{\textcolor{symbolcolor}{,}}}1
+      {\{}{{\textcolor{symbolcolor}{\{}}}1
+      {\}}{{\textcolor{symbolcolor}{\}}}}1
+      {!}{{\textcolor{symbolcolor}{!}}}1
+}
+
+\usepackage{enumitem}
+\usepackage[
+backend=bibtex,
+style=ieee,
+citestyle=numeric,
+maxbibnames=99
+]{biblatex}
+\addbibresource{bib.bib}
+\usepackage{afterpage}
+\usepackage{caption}
+\usepackage{cancel}
+\captionsetup{font=small,labelfont=bf}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usetikzlibrary{positioning, patterns}
+\usepackage{listings}
+\newcommand{\hsp}{\hspace{20pt}}
+\setlength{\parskip}{1em}
+\setcounter{chapter}{1}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue,
+    }
+\usepackage[nameinlink,noabbrev,capitalize]{cleveref}
+
+\newcommand\note[1]{\textcolor{red}{#1}\PackageWarning{MyWarnings}{#1}}
+
+
+\graphicspath{
+%{sections/1_Motivation_and_objectives/Motivation/imgs/}
+%{sections/2_Literature_review/Literature_review/imgs/}
+{sections/3_Methodology_1/1_Random_points_connection/imgs/}
+{sections/3_Methodology_1/2_Pseudorandom_points_generation/imgs/}
+{sections/3_Methodology_1/3_Controlled_random_connections/imgs/}
+{sections/4_Methodology_2/1_layer_generation/imgs/}
+{sections/4_Methodology_2/2_adapted_tessellation/imgs/}
+{sections/4_Methodology_2/3_density_reduction/imgs/}
+{sections/4_Methodology_2/4_structure_consolidation/imgs/}
+{sections/5_Case_studio_1/1_Nonplanar_gcode/imgs/}
+%{sections/6_Case_studio_2/case_studio_2/imgs/}
+%{sections/7_Discussion_and_conclusion/discussion/imgs/}
+  }
+
+\usepackage{subfiles}

@@ -1,0 +1,143 @@
+\documentclass[../../../main.tex]{subfiles}
+\begin{document}    
+
+Three-dimensional (3D) bioprinting involves the use of techniques similar to 3D printing to combine cells, growth factors, biological inks and biomaterials to manufacture functional structures that were traditionally used for tissue engineering applications. 
+One such application is 3D bone tissue printing, which aims to design structures, or bone scaffolds, that can contain living bone tissue and partially or totally replace a bone that needs to be replaced.
+
+The design of these scaffolds is very complex, as they must be able to withstand all the loads that the bone supports and, in addition, they must allow the regeneration of the internal vascular tissue of the bone\cite{life12060903}. 
+Apart from the design of these structures, bone bioprinting also poses other challenges, such as generating bio-inks that keep bone cells alive and using 3D printing methods that are compatible with the use of these bio-inks\cite{jfb13040214}.
+
+This Thesis aims to investigate whether it is possible to design self-sustaining stochastic porous structures that can be used as bone scaffolds and whether their application beyond bioprinting is possible.
+Before presenting the questions that will guide the development of this work, it is necessary to understand the requirements that must be met to manufacture bone scaffolds.
+
+\subsection{Bone scaffolds as an alternative to metal prostheses}
+The loss of large amounts of bone tissue, caused by trauma, tumour resection or degenerative diseases, poses a significant clinical challenge, as bone is unable to regenerate in critical defects.
+In this situation, prosthetic solutions are required that restore structural function and promote biological integration with the surrounding tissue.
+
+For decades, metal prostheses have been widely used due to their high mechanical strength and the availability of established manufacturing techniques. 
+However, they have notable drawbacks. 
+Firstly, their high rigidity compared to that of bone causes \textit{stress shielding}, i.e. an abnormal redistribution of loads that leads to the resorption of adjacent bone and a decrease in long-term stability \cite{Huiskes1992, Sumner2015}.
+Secondly, as they are non-resorbable materials, metal prostheses do not integrate dynamically with the body, but remain as foreign bodies that sometimes require revision surgery after prolonged periods \cite{Pioletti2010}.
+Added to this is the risk of corrosion and release of metal ions into the body, which can induce inflammatory responses or even local toxicity \cite{Hallab2009}.
+
+Given these limitations, bone scaffolds represent a very promising alternative. 
+Their main advantage is that they can be designed with a porous, interconnected microstructure that mimics the hierarchical architecture of bone, which promotes cell migration, nutrient transport and vascular growth.
+Unlike metal prostheses, these scaffolds can be manufactured from biodegradable or bioabsorbable materials, providing initial mechanical support and gradually being replaced by the patient's own regenerated bone \cite{Hollister2005}. 
+This reduces the need for subsequent surgery and offers much more natural integration.
+The incorporation of additive manufacturing techniques has further expanded the potential of this alternative by enabling the design of customised prostheses that adapt to the specific geometry of the bone defect.
+In this context, the development of new scaffolds that combine favourable biological properties with high manufacturability is essential to overcome the limitations of traditional metal prostheses and move towards more effective and durable solutions in regenerative medicine.
+
+\subsection{Biological characterisation of bone tissue}
+
+Although bone is usually seen as a rigid and uniform structure, it is composed of two types of tissue: cortical bone and trabecular bone. 
+The former is a compact, resistant tissue through which the vast majority of blood vessels circulate, see \cref{fig:bone}. 
+The latter is a spongy tissue that contains bone marrow and some small branches of blood vessels \cite{Haidar_2021}. 
+Bone scaffolds aim to carry out the role of both tissues, providing strength while allowing nutrients, cells and blood vessels to pass through them \cite{life12060903}.
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width =0.6\textwidth]{imgs/Bone_cross-section.png}
+    \caption{Pbroks13. (2012). Long bone diagram. \href{https://commons.wikimedia.org/wiki/File:Bone_cross-section.svg}{Wikimedia Commons}. CC BY-SA 4.0.}
+    \label{fig:bone}
+\end{figure}
+
+Numerous studies have been conducted to investigate how the porosity of the scaffold, in terms of volume, density and pore morphology, affects bone regeneration \cite{He2020, Sanz-Herrera2008, Adachi2006, Zadpoor2015}. 
+It is essential to note that the osteogenic potential of the scaffold depends on the connectivity between the pores, which facilitates cell dispersion, tissue integration and vascular growth. 
+Therefore, the preparation of bone scaffolds with adequate pore size and interconnectivity is an important issue in bone tissue engineering. 
+However, to be effective in vivo, the scaffold must also meet physiological mechanical load requirements \cite{Abbasi2020}.
+In terms of bone porosity, optimal tissue growth and scaffold functionality require pores with a minimum diameter of 100 $\mu m$, as osteoclasts are of this size and must be able to pass through the pores. 
+Porosity levels between 50 and 90\% are also required, reflecting the characteristics of trabecular bone \cite{Karageorgiou2005}. 
+Pore size should be in the range of 200 to 350 $\mu m$ to achieve better cell proliferation and facilitate cell adhesion. 
+However, studies suggest that a larger pore size (500 $\mu m$) does not affect cell adhesion \cite{Abbasi2020}. 
+However, although high porosity and pore size may be favourable, it should be noted that high values affect load-bearing requirements. 
+Therefore, a combination of micropores and macropores is essential to meet the structural and biological requirements of bone regeneration.
+
+\subsection{Design of porous scaffolds: compromises between biology and manufacturing}
+
+The design of bone scaffolds has evolved in parallel with the development of tissue engineering and additive manufacturing techniques.
+One of the most widely used designs is the regular design, based on the periodic repetition of geometric unit cells, such as cubes, strut-based, or triply periodic minimal surfaces (TPMS). 
+These designs offer several advantages: they allow precise control of porosity, facilitate the prediction of mechanical properties, and are highly compatible with 3D printing processes \cite{Mullen2010, Al-Ketan}.
+However, their highly ordered nature limits the heterogeneity of mechanical stimuli and reduces the similarity to the complex microstructure of trabecular bone, which can decrease cellular response and the quality of bone regeneration \cite{Hollister2005}. 
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width =0.6\textwidth]{imgs/regular_lattice.jpg}
+    \caption{Different types of lattice unit cells (A) Strut-based or geometrical lattice (B,C) TPMS-based unit cells. Image extracted with Creative Commons CC-BY-NC-ND 4.0 permissions from Benedetti et al. Figure 6 \cite{BENEDETTI2021100606}}
+    \label{fig:regular}
+\end{figure}
+
+At the opposite end of the spectrum are random or stochastic designs, which are designed to more closely mimic the irregular nature of bone. 
+These structures are characterised by a non-periodic distribution of pores and trabeculae, which generates a greater diversity of mechanical stimuli and cellular microenvironments that are closer to natural ones \cite{Yang2015}. 
+In addition, their irregular topology tends to favour vascularisation, a key factor in the regeneration of critical defects.
+However, these biological advantages are often offset by manufacturing problems. 
+Due to the absence of strict geometric control, many of their configurations have overhangs or sharp angles that require the use of support material during 3D printing \cite{WU20141}.
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width =0.3\textwidth]{imgs/random_lattice.png}
+    \caption{Example of stochastic design for bone scaffold.}
+    \label{fig:random}
+\end{figure}
+
+Support material is an auxiliary material that the printer deposits parallel to the main part to support those parts whose geometry does not remain stable during the manufacturing process, such as overhangs or long bridges. 
+Although indispensable in many cases, its presence is undesirable in the context of bone prostheses. 
+Firstly, it significantly increases printing time and material consumption, which may contain living cells and is often scarce. 
+Secondly, its subsequent removal is not always complete or straightforward: it can leave residues trapped in the internal pores of the scaffold, compromising biocompatibility and reducing the interconnectivity of the channels necessary for vascularisation. 
+Finally, support removal processes, whether mechanical, chemical or thermal, can damage the part or alter its surface properties, with the consequent detriment to biological integration \cite{Tan2003}.
+Its use is necessary when the surfaces to be printed have an inclination greater than 45$^\circ$. 
+Above this inclination, the material of the underlying layers is unable to support the upper layers, which collapse under their own weight, see \cref{fig:support}. 
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width =0.8\textwidth]{imgs/support_material.png}
+    \caption{Illustration of the danger of collapse of printed layers due to excessive overhang or steep inclination. The support material prevents these layers from collapsing.}
+    \label{fig:support}
+\end{figure}
+
+Between these two approaches lies an opportunity: the development of self-supporting stochastic structures. 
+This type of design seeks to reproduce the spatial heterogeneity and biological advantages of random scaffolds, but with a geometric restriction that guarantees their stability during printing without the need for supports.
+In this way, costs are reduced, manufacturing efficiency is improved, and problems associated with the presence and removal of auxiliary material are avoided. 
+At the same time, adequate mechanical properties are maintained, and a favourable environment for bone regeneration is facilitated. 
+These characteristics make self-supporting scaffolds an ideal candidate for advancing towards customised prostheses that combine industrial viability with maximum biological potential.
+
+\subsection{3D printing and bioprinting technologies: principles, applications, and cell compatibility}
+
+Additive manufacturing encompasses a wide variety of technologies, each with different operating principles and varying degrees of compatibility with the printing of biological materials containing living cells.
+Among the most relevant for tissue engineering and the development of bone scaffolds are the following:
+
+\subsubsection{Fused Deposition Modelling (FDM)}
+
+This technique melts a thermoplastic filament (such as PLA, ABS or PEEK) and deposits it layer by layer through a nozzle. 
+Its main advantage is its accessibility and low cost, as well as allowing the use of biocompatible polymers.
+However, as it requires high extrusion temperatures (180–300$^\circ C$), it is not compatible with the direct inclusion of living cells in the printing ink \cite{life12060903}.
+
+\subsubsection{Stereolithography (SLA) and Digital Light Processing (DLP)}
+
+Both techniques are based on the photopolymerisation of light-sensitive resins (spot laser in SLA and full pattern projection in DLP). 
+These technologies allow for high resolution and geometric complexity, which is attractive for porous scaffolds. However, the photoinitiators and wavelengths used in polymerisation can be cytotoxic, limiting their compatibility with living cells in direct bioprinting \cite{life12060903}.
+
+\subsubsection{Selective Laser Sintering/Melting (SLS/SLM)}
+
+These techniques use a high-power laser to sinter or melt powders (metallic, ceramic or polymeric). 
+They are ideal for manufacturing metallic or ceramic scaffolds with advanced mechanical properties and high porosity.
+However, the extreme temperatures involved in the process make them totally incompatible with the presence of living cells in the ink \cite{life12060903}.
+
+\subsubsection{Inkjet Printing}
+This process involves depositing drops of liquid bio-inks in a controlled manner, utilising piezoelectric vibrations or thermal bubbles to expel the material. 
+It is compatible with living cells thanks to the low temperatures and gentleness of the process, but is usually limited to low viscosities and structures with lower mechanical strength \cite{life12060903}.
+
+\subsubsection{Extrusion-based Bioprinting}
+In this technique, bio-inks—mixtures of hydrogel biomaterials with living cells—are deposited through a nozzle using pneumatic or mechanical pressure.
+It is currently the most widely used technology in cellular bioprinting, as it supports higher viscosity materials and allows for high cell densities.
+Its main limitation is its relatively low resolution, as well as the trade-off between cell viability and structural stability \cite{Murphy2014}.
+
+\subsubsection{Laser-Assisted Bioprinting (LAB)}
+Based on the projection of laser pulses onto a layer of bio-ink which, when vaporised locally, projects microdroplets onto a receiving substrate.
+It offers high spatial resolution and control in cell deposition, maintaining high cell viability.
+However, it is technologically complex and expensive, which limits its applicability on a large scale \cite{Guillemot2010}.
+
+Overall, it can be said that conventional 3D printing technologies are optimal for manufacturing structural scaffolds but are not compatible with the presence of living cells during printing. 
+In contrast, specific bioprinting technologies (inkjet, extrusion, LAB) allow cells to be integrated directly into the structures, although they sacrifice some of the mechanical properties and scale of the scaffolds.
+This difference justifies the development of scaffold designs that can benefit from both approaches: on the one hand, robust, self-supporting structures obtained using conventional techniques; on the other, cell coatings or fillings printed using compatible biotechnologies.
+
+\end{document}

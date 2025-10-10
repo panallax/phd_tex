@@ -1,0 +1,36 @@
+\documentclass[../../../main.tex]{subfiles}
+\begin{document}
+
+Bioprinting is a field of 3D printing with growing relevance in the field of regenerative medicine. 
+More and more studies are being conducted, and efforts are being made to find the best bioinks for regenerating cell cultures and the best scaffold designs for replacing human bone. 
+Although it is a growing field, development is beginning to reach stages where proof-of-concept tests are being implemented in animals to study their integration. 
+Advances in bio-inks do not correspond to advances in bone scaffold design. 
+Currently, the number of studies using regular structures is higher than that of those using stochastic structures, even though stochastic structures have been shown to have better biocompatibility and certain mechanical properties. 
+This work aims to provide another milestone in this process by proposing an algorithm that makes it easier to generate porous stochastic structures that could be used as bone scaffolds.
+
+The generative design algorithm developed is based on the tetrahedralisation of the volume using modified Delaunay tessellations to generate self-supporting random porous structures. 
+In addition, this algorithm understands pore size as a customisable design parameter, so the structures generated can be customised according to this parameter. 
+It also offers the possibility of controlling the minimum angle of the edges, allowing the generated structures to be self-supporting, eliminating the need for support material to print them. 
+This is essential if they are to be used in scenarios with living cells. 
+These generated structures offer something that had not been previously considered for the manufacture of bone scaffolds: self-sustainability.  
+
+A conventional printer has been modified to print the generated structures in a non-planar way to give them greater strength by eliminating the printing layers. 
+To achieve this, an extra-long extruder and a heating system based on a nichrome coil had to be designed to melt the polymer through it. 
+The design used was satisfactory, and it was possible to print with it in both flat and non-planar forms. 
+This achieved the milestone of being able to perform the first known high-temperature extrusion 3D printing with such a long extruder. 
+This development opens the door to the future development of this printing method and the exploration of its possible applications.
+ 
+
+The applicability of the proposed structures beyond bone scaffolds has been studied by considering the applicability of using the developed algorithm to generate a structure that can be used as a thruster bracket on the European Space Agency's satellite CHIME. 
+During the development of this use case, many public and private software programmes were used to generate the solid mesh of the structure. 
+It was found that the technology was pushed to its limits, as only one of the software programmes used was successful in generating the solid mesh of the structure.
+This highlights the need to develop more robust and specialised software to deal with stochastic lattice structures. 
+These types of structures are increasingly used thanks to the development of additive manufacturing.
+The results obtained from the simulations carried out using finite element analysis showed that the stochastic lattice structure generated could indeed be used as a bracket for the proposed propulsion system, as it outperformed the required mechanical criteria.
+In addition, a model of the structure was manufactured using the Adaptive Spatial Lattice Manufacturing (ASLM) method developed by the French company Tetmet, which proposes a disruptive method for manufacturing lattice structures. Unfortunately, the results obtained from the finite element analysis could not be corroborated by mechanical tests in the laboratory. 
+However, the versatility of the algorithm and the reliability of the generated structures were demonstrated.
+These structures were shown to have better mechanical strength than the most commonly used bone scaffold designs: Gyroid and Voronoi.
+ 
+
+The development observed and obtained from the algorithm and the structures opens the door for them to be considered when manufacturing bone scaffolds and other types of structures, emphasising the good properties of reticular structures, specifically stochastic ones.
+\end{document}

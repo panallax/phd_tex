@@ -1,0 +1,94 @@
+\documentclass[../../../main.tex]{subfiles}
+\begin{document}
+
+The main objective of this work is to create stochastic porous structures that can be 3D printed using extrusion without support. 
+These types of structures offer several advantages over the widely used regular structures. 
+In addition, they aim to solve a problem with stochastic structures, namely that the designs used do not ensure their sustainability. 
+Therefore, they may require support material to be printed. 
+This is counterproductive when the purpose of these structures is to be used in combination with living cells, as their removal compromises the cells. 
+Furthermore, the use of support material can be critical in various applications beyond medicine. 
+Applications that use materials requiring high mechanical performance tend to use very expensive materials, mainly metal alloys, with very complex geometries, such as those obtained from topological optimisation. 
+These designs usually require support material to be printed, which must be made of the same material. 
+Therefore, avoiding the use of support material significantly reduces the amount of material to be used and also prevents the generation of stresses during its removal. 
+This can be relevant in industries such as aerospace. 
+Especially in the emerging field of space manufacturing, where resources are limited and their optimisation is crucial. 
+These reasons motivated us to carry out this project and pose the research questions raised at the beginning of this manuscript. 
+In this section, this section aims to answer them after the results of the research have been obtained.
+
+\begin{center}
+\subsubsection{RQ1: How can we create better porous structures, manufacturable by 3D Printing micro-extrusion, for tissue engineering, in a physics-driven way?}
+\end{center}
+This question can be broken down into several points. 
+The first refers to the concept of "better porous structures". 
+In the context of this work, it is considered that the structures most commonly used in tissue engineering have several drawbacks associated with their regularity. 
+Therefore, random structures solve the problems arising from the regularity of structures and, in this sense, can be taken into account. 
+The main problem with random structures is that their design and manufacture are complex. 
+This work provides a new methodology for designing stochastic structures that guarantee their manufacturability. Therefore, it can be concluded that the proposed method, based on the tetrahedralisation of a volume using modified Dealunay tessellations, is a method by which better porous structures can be generated. 
+Furthermore, it has been demonstrated that they can be printed by extrusion. 
+Therefore, the second point of the question, "3D manufacturable by microextrusion", can also be considered satisfied. 
+
+The third point into which the question can be divided is "in a physically-driven way". 
+This clause was added to the question because the initial intention was for the generated structures to adapt to the boundary conditions. 
+However, it was found that it was very difficult to combine adaptation to loads with the task of ensuring self-sustainability. 
+It was therefore decided to decouple the two processes: first, sustainability would be ensured, and then the strength of the structure would be improved. 
+The first of these two objectives was successfully achieved. 
+However, the second could not be verified. 
+The strength optimisation module was developed, but its performance could not be verified due to all the problems that were encountered during the meshing of the structure. 
+Furthermore, in the first use case, the strength cannot be increased other than by increasing the diameter of the extruder. 
+For this reason, this third point of the research question could not be completed as initially planned. 
+However, the results obtained from the simulations and strength tests show that the structures developed have very good native mechanical properties.
+
+Therefore, the answer to this question is that tetrahedralisation of a volume based on modified Dealunyan tessellations is a method that allows for the creation of self-supporting stochastic porous structures that can be 3D printed using extrusion. These structures offer better properties than those commonly used for the manufacture of bone scaffolds.
+
+\begin{center}
+\subsubsection{RQ2: Is it possible to generate bio-inspired structures that can be used in a real space scenario?}
+\end{center}
+
+The second use case carried out during this project aimed to demonstrate that random structures can be relevant in other fields beyond the manufacture of bone scaffolds. 
+This use case posed a major challenge, as the dimensions required for the structure were several orders of magnitude greater than those used in the first use case and in most of the project development. I
+n addition, the algorithm was required to be able to process more complex geometries subject to rigorous criteria. 
+Despite all the obstacles encountered during the development of this use case, a solution was always found. 
+Although it was not possible to guarantee a solution that relied entirely on open source code, a solution was found within commercial software. 
+The development of this case has demonstrated that the technology used daily has been pushed to its limits, revealing its weaknesses and highlighting the need to develop new software and algorithms that make it easier to work with stochastic lattice structures, as these offer very interesting features for a wide range of applications. 
+The results obtained from the simulations reflect very positively on the applicability of this type of structure in an application as demanding as the support of a satellite's propulsion system. 
+Although the results of simulations performed by implicit modelling software are indeed less accurate than those that could be obtained by a classical solver, the results obtained in this project guarantee the viability of using the proposed structure in the scenario considered.
+Although these modellers produce less accurate results, this inaccuracy does not represent a significant deviation from those that could be obtained in a specialised solver. 
+In addition, the new method of manufacturing reticular structures proposed by the French company Tetmet has been tested, showing that this method is feasible and interesting for the manufacture of this type of structure.
+
+Although the structure could not be tested in the laboratory to corroborate the values obtained in the simulations with real data, it can be concluded that this type of structure could potentially be used in a real scenario in a field completely different from biology.
+
+\begin{center}
+\subsubsection{RQ3: Is it possible to 3D-print self-supported structures in a
+non-planar way?}
+\end{center}
+
+The first use case aimed to print the generated structures in a non-planar manner because the presence of layers makes the pieces more fragile, as they are points of stress concentration that end up detaching the layers. 
+This is undesirable if the structures are intended to serve as bone prostheses. 
+Non-planar printing offers the possibility of eliminating these layers and supposedly improving the strength of the pieces. 
+The problem is that very few geometries can be printed in this way, and that 3D printers are not designed to print in this way. 
+Fortunately, the structures proposed in this work are composed of bars that are candidates for non-planar 3D printing. 
+Many problems had to be solved to be able to print non-planar with a conventional 3D printer, but it was finally achieved.
+
+Although it was possible to print in a non-planar fashion, the prints made were very simple and far from satisfactory and, above all, far from a complete structure. 
+While it is true that the experiments carried out showed that this form of printing could be viable, the degree of maturity achieved was very low, and a lot of work and effort is required to complete an entire print. 
+The extruder used needs to be improved, and a design needs to be found that allows it to be screwed directly onto the hot block. 
+The heating system should also be designed in more detail. 
+Although the proposed system worked, it has many drawbacks. 
+These include the inability to know the actual temperature of the filament and the tube, the variability of each design, and the placement of the ends of the nichrome filament. 
+More attention should be paid to the manufacture of the coil. 
+Above all, a better understanding of the dynamics of the molten polymer inside the extruder is needed in order to improve print quality. 
+Despite this, printing with the extra-long extruder was possible, demonstrating that printing with such long extruders is also feasible.
+
+In addition to improving the extrusion system, printing strategies should also be improved to enhance the bonding of edges at the nodes. 
+The strategy used does not provide the best finish at the nodes and has not managed to prevent the extruder from colliding with the edges already printed. 
+Therefore, the strategy for planning the printing routes should be reconsidered.
+
+Although the level of development achieved is still very premature, it has been demonstrated that high-temperature extrusion printing is possible with a modified extruder, opening the door to design improvements to further develop this type of printing. 
+Even though it was not possible to print structures for compression testing, it was observed that the rigidity of non-planar printed edges was much higher than that of planar printed edges. 
+Therefore, further development of this printing method could be very interesting to obtain parts with real-world applicability. 
+For example, hybrid bioprinting could benefit from this printing method to print very resistant scaffolds on which to deposit bio-inks containing cells. 
+These scaffolds could achieve properties similar to those of human bone while being printed with biocompatible materials instead of metal. 
+Metal has many drawbacks, but for now, it serves as a substitute for bone.
+
+
+\end{document}

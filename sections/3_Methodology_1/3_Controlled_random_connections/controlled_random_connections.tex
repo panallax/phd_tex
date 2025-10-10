@@ -1,0 +1,218 @@
+\documentclass[../../../main.tex]{subfiles}
+\begin{document}
+
+This subsection proposes a methodology based on the previous one. Starting from points distributed at the base of the volume, points are generated at a suitable distance and location from which new ones are generated. 
+This method does not use initial random points distributed throughout the volume, but generates all the points it uses from others.
+In this way, points are generated randomly but only using those that are valid a priori.
+
+\subsection{Controlled random points generation}
+
+Since the strategy of generating random points within a volume does not work, the opposite approach is to generate them in a non-random way.
+The following methodology begins by arranging the surface points from the STL of the volume in an ascending order based on their \textit{z} coordinates, effectively sorting them from bottom to top. 
+For each, all surrounding points within a radius \textit{r} are retrieved and ordered by proximity, dismissing those beneath the evaluated point. 
+A count of unoccupied quadrants, or available quadrants, is initialised. 
+For each upper point identified, the angle formed with the horizontal plane is computed.
+If this angle exceeds $45^{\circ}$,  the quadrant to which the candidate corresponds is verified and, if the corresponding quadrant is free, the point is joined and the quadrant is removed from the list of available ones.
+This procedure is repeated for each upper point encountered until every quadrant is occupied. 
+Should any quadrants remain unoccupied after assessing all upper points, a random point is generated in each empty quadrant using the function described in the \cref{sec:random_gen}.
+The new points are then inserted into the appropriate position according to their \textit{z} coordinate for later processing.
+This process continues until no more unions can be made and no more points can be generated within the volume.
+
+This method allows for controlling the number of connections a point has at all times and also ensures that these connections are evenly distributed around the node.
+However, it is important to note that if connections cannot be made, either because there are no valid superior points or because there are no quadrants available, the number of points will increase with each iteration.
+Since the success of generating a connection depends on many factors, it is not a deterministic process but rather a probabilistic one. 
+Therefore, the probability of generating a connection can be seen as a random variable, $C(p)$. And, in turn, the probability of generating a point can also be seen as another random variable, $G(p)$. 
+
+Let $E[C(p)]$ be the expected number of successful connections at point $p$. And let $E[G(p)]$ be the expected number of new points generated at point $p$. 
+Given that four quadrants are considered, then
+\[
+E[G(p)] = 4 - E[C(p)].
+\]
+And the expected increase in points in each iteration would be
+\[
+N_{t+1}=N_t+N_t \cdot(4-E[C(p)]) \Rightarrow N_{t+1}=N_t \cdot(5-E[C(p)]).
+\]
+Where $N_t$ and $N_{t+1}$ are the number of points in iteration $t$ and $t+1$, respectively. 
+Therefore, while $E[G(p)] >1$, the number of points will increase in each iteration, drifting into an endless process. 
+Indeed, it could be considered a branching process where each point generates $k\sim Poisson(5-E[C(p)])$. 
+With a rate of growth of
+\[
+N_{t} \approx N_0\cdot\lambda^t.
+\]
+\noindent The higher the intensity $\lambda = 5 - E[C(p)] > 1$, the more exponential the point generation process will be.
+
+As the search radius influences the number of points retrieved, the larger the radius, the greater the number of points retrieved and, therefore, the greater the probability of generating connections and, consequently, the lower the $E[G(p)]$.
+Thus, there must be a radius at which $E[G(p)] \leq 1$ and the algorithm would finish at some point.
+However, this minimum radius cannot be determined beforehand because it depends on several factors, such as the volume's topology, dimensionality, and the number of points, among others.
+\textcolor{blue}{Figure} \ref{fig:esperanza} shows the variation in the expected values as a function of radius for a 3x4 \textit{mm} cylinder.
+It can be noticed that the sum of the expected values is not equal to four because the points on the surface cannot be connected to four other points. 
+After all, two of them would lie outside the volume.
+In this example, the minimum radius for the algorithm to finish is $\simeq 12\%$ of the volume's height.
+Beneath that value, the number of points grows exponentially, and the algorithm will never end.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{imgs/esperanzas.png}
+    \caption{Variation of expected values as a function of the chosen radius.}
+    \label{fig:esperanza}
+\end{figure}
+
+Using the same volume and the same conditions as in \cref{sec:pseudorand} (initial points = 527, \textit{r} = 1 \textit{mm}), this method generates 215 points so that at the end of the process the structure has 742 points, compared to 1336 in the previous method, and 2167 edges, compared to 4356 in the previous method. 
+Therefore, this method manages to drastically reduce the number of points and edges as it only uses the necessary number of points and edges.
+Also, it ensures the top and bottom connectivity of the nodes. 
+However, it is still not possible to ensure that the bottom connectivity is complete.
+Although the generated points are close to the other points, the connectivity is very high on both sides.
+\cref{fig:color_nodes} shows the connectivity of the structure obtained in the example. 
+Nodes with fewer than four edges are shown in red.
+All of them correspond to points on the surface of the volume.
+It can be seen that the most frequent value of connectivity is six, meaning that complete connectivity is not guaranteed in the majority of the nodes.
+A further benefit of this method is that the length of the edges is highly concentrated, reducing the probability that they cross each other, see \cref{fig:lengths}.
+In the next section, a function that has been implemented to solve the problem of edges that intersect or skew is explained.
+
+\begin{figure}
+    \centering
+    \\includegraphics[width=0.9\textwidth]{imgs/color_nodes.svg.pdf}
+    \caption{Connectivity of the example structure.}
+    \label{fig:color_nodes}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \\includegraphics[width=0.9\textwidth]{imgs/lengths.svg.pdf}
+    \caption{Edge length dispersion in the example structure.}
+    \label{fig:lengths}
+\end{figure}
+
+\subsection{Close edges removal}
+
+Intersecting edges remain a major challenge to address. 
+Even if the structure is to be printed using non-planar techniques, it must be ensured that edges are spaced at least as far apart as the nozzle radius of the printer. 
+Therefore, the issue is not limited to edges that intersect at a point, but also includes spatially close edges, such as skew edges, that come closer than the minimum allowed distance.
+If this condition is violated, the extruder may collide with already-printed material, potentially tearing it off.
+
+To tackle this, a post-processing function was implemented to remove invalid edges. The goal is to compute the minimum distance between pairs of line segments. 
+If the minimum distance is zero, it suggests that the segments intersect. If the distance is non-zero but below the allowed threshold, the segments are considered too close and are also invalid.
+The minimum distance between two lines can be computed as:
+\[
+d = \frac{\left|\left(\mathbf{P}_2 - \mathbf{P}_1\right) \cdot \left(\mathbf{v}_1 \times \mathbf{v}_2\right)\right|}{\left\|\mathbf{v}_1 \times \mathbf{v}_2\right\|},
+\]
+where $\mathbf{P}_1$ and $\mathbf{P}_2$ are points on each line, and $\mathbf{v}_1$ and $\mathbf{v}_2$ are their respective direction vectors.
+
+However, in this case, there are no infinite lines but line segments. 
+Thus, this formula cannot be applied directly: when two segments are nearly collinear or partially overlapping, the computed distance might be zero, even if they do not physically intersect, see \cref{fig:segmentos}. 
+This would result in false positives, incorrectly identifying valid segments as invalid.
+
+\begin{figure}[!htbp]
+    \centering
+    \input{imgs/segmentos.tex}
+    \caption{Illustration of a line segment that virtually intersects.}
+    \label{fig:segmentos}
+\end{figure}
+
+Calculating the minimum distance between two straight line segments is a more complex problem, but there are several ways to solve it. 
+The most common way to solve this problem is parametrically. 
+How to solve it in this way is explained as follows.
+Let $\mathbf{P}_1$ and $\mathbf{Q}_1$ define the endpoints of the first segment, and $\mathbf{P}_2$ and $\mathbf{Q}_2$ those of the second. 
+The segments can be parametrised as:
+
+\begin{align*}
+\mathbf{S}_1(s) &= \mathbf{P}_1 + s\,\mathbf{u}, \; \text{with } s \in [0,1], \quad \mathbf{u} = \mathbf{Q}_1 - \mathbf{P}_1, \\
+\mathbf{S}_2(t) &= \mathbf{P}_2 + t\,\mathbf{v}, \; \text{with } t \in [0,1], \quad \mathbf{v} = \mathbf{Q}_2 - \mathbf{P}_2.
+\end{align*}
+
+The minimum distance between the two segments can be found by minimising the squared distance function:
+
+\[
+D(s,t) = \left\| \mathbf{S}_1(s) - \mathbf{S}_2(t) \right\|^2 = \left\| (\mathbf{P}_1 - \mathbf{P}_2) + s\,\mathbf{u} - t\,\mathbf{v} \right\|^2.
+\]
+
+Let's define:
+\begin{align*}
+\mathbf{w} &= \mathbf{P}_1 - \mathbf{P}_2, \\
+a &= \mathbf{u} \cdot \mathbf{u}, \\
+b &= \mathbf{u} \cdot \mathbf{v}, \\
+c &= \mathbf{v} \cdot \mathbf{v}, \\
+d &= \mathbf{u} \cdot \mathbf{w}, \\
+e &= \mathbf{v} \cdot \mathbf{w}.
+\end{align*}
+
+The optimal parameters $(s^*, t^*)$ that minimize $D(s,t)$ are obtained by solving:
+
+\[
+\begin{bmatrix}
+a & -b \\
+-b & c
+\end{bmatrix}
+\begin{bmatrix}
+s \\
+t
+\end{bmatrix}
+=
+\begin{bmatrix}
+d \\
+e
+\end{bmatrix}.
+\]
+
+This leads to:
+\begin{align*}
+s^* &= \frac{b e - c d}{a c - b^2}, \\
+t^* &= \frac{a e - b d}{a c - b^2}.
+\end{align*}
+
+Finally, the parameters $s^*$ and $t^*$ must be clamped to the interval $[0,1]$ to ensure that the points lie within the segments. The minimum distance is then:
+
+\[
+d_{\text{min}} = \left\| \mathbf{S}_1(s^*) - \mathbf{S}_2(t^*) \right\|.
+\]
+
+Another way to solve the problem is to spread \textit{n} points on each of the segments and calculate the minimum distance between each pair of points. 
+But this method has $\mathcal{O}(n^{2})$ complexity while the one proposed above has a $\mathcal{O}(1)$ complexity.
+
+Once the minimum distance between two segments can be calculated, it is only necessary to calculate the distance between one segment and the rest to find which segments are invalid.
+The process to calculate the distance between one segment and the rest has a complexity of $\mathcal{O}(n^{2})$.
+This means that this process becomes too computationally expensive since the number of edges is usually very high.
+The example proposed in the previous section contained 2167 edges, which means that it would take 4,695,889 iterations just to calculate the distance between the pairs of segments.
+If one analyses the problem in detail, one realises that it is not necessary to check the distance between all pairs of segments since it is useless to measure the distance between two segments at each end of the volume. 
+From this premise, the question arises as to what the maximum distance is necessary to take into account when observing close segments to calculate the distance between them. 
+In other words, from what distance is it impossible for two segments to intersect?
+If it is possible to measure this distance, only segments falling within this range should be considered. 
+This would reduce the number of iterations needed to detect invalid edges.
+
+Let $S$ be a segment in a set of segments $\mathcal{C}$. We define $\mathcal{C}' \subset \mathcal{C}$ as the subset of segments whose minimum distance to $S$ is less than a given radius $R$. 
+Any segment entirely contained within this radius is a potential candidate for geometric conflict with $S$ (i.e., intersection or clearance violation).
+To guarantee that all potentially conflicting segments are included in $\mathcal{C}'$, the search radius $R$ must be at least as large as the maximum length $L_{\max}$ among the segments in $\mathcal{C}$. 
+This requirement arises from worst-case configurations where two segments may intersect at or near their endpoints, even if their midpoints are separated by nearly $L_{\max}$.
+Hence, the following condition must be satisfied:
+\[
+R \geq L_{\max}
+\]
+By enforcing this bound on $R$, it is ensured that all geometrically relevant neighbours are considered without having to check all possible segment pairs. 
+
+Therefore, for any segment $S$, all nodes that are within a radius $R = L_{\max}$, to each of their ends, are retrieved and matched by segments. 
+Those segments with one of their ends outside the range are discarded. 
+Then, segments that share any node with the nodes of segment $S$ are also discarded as they correspond to convergent segments at the ends of $S$ and should not be considered. 
+The remaining segments are the segments that are actually potentially intersecting with $S$ and will be considered when calculating the minimum distance. 
+Once all the minimum distances of these segments have been calculated. 
+If any is less than the minimum distance allowed $d_{min}$, that segment is considered a candidate for further analysis. 
+After all the segments that have a minimum distance with respect to $S$ that is less than the minimum distance have been obtained, it is calculated which segment has the greatest connectivity at its ends. 
+And this will be eliminated. 
+There could be a situation in which the segment to be eliminated is $S$ itself. 
+In this way, the minimum number of segments can be eliminated without penalising the connectivity of the structure. 
+
+This results in a computational complexity reduction from $\mathcal{O}(n^2)$ to approximately $\mathcal{O}(n\cdot k)$, where $k$ is the average number of neighbouring segments found within the radius $R$, which is $k\ll n$.
+For example, if \textit{n} = 10000 and \textit{k} = 20, the reduction obtained is
+\[
+\frac{n^{2}}{n\cdot k} = \frac{10^8}{2 \times 10^5}=500 \text { times faster. }
+\]
+
+Although this logic aims to eliminate as few segments as possible, there are situations in which a node will inevitably lose the vast majority of its connections because it is very close to another node, see \cref{fig:no_edges} \textcolor{blue}{(b)}. 
+This can lead to situations of loss of continuity in the structure, or even cause nodes to become isolated. 
+The latter is not really a problem because these isolated nodes would be eliminated, but the former is because it is uncontrollable. 
+Although the points are generated in limited areas, they continue to do so randomly without maintaining a relationship with their surroundings. 
+In the structure in \cref{fig:color_nodes}, if a minimum distance of 0.1 \textit{mm} is set, 910 edges out of the initial 2,167 are removed, or $\simeq 42\%$. 
+This indicates that this method is not reliable for generating structures. 
+In general, this section has shown that randomness cannot be part of the methodology; the final method for generating random structures that can be printed in a non-planar way must be based on deterministic methods. 
+Therefore, this method is also discarded and shows the need to find another way to give randomness to a structure that does not involve the use of randomness.
+
+\end{document}

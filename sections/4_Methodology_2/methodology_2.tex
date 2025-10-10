@@ -1,0 +1,35 @@
+\documentclass[../../main.tex]{subfiles}
+
+\begin{document}
+
+The aim is to create an algorithm to generate fully connected stochastic structures based on nodes and edges.
+In such a way that the pore size and the position of the edges are controllable. 
+
+As discussed in the previous sections, the main problem with ensuring connectivity when using a random points-based approach is that there is no control over the position of the nodes or even the number of nodes.
+Even if a minimum distance between nodes can be assured, their position may not guarantee that the geometrical conditions can be met. 
+Although the position of the non-fixed nodes could be modified during generation to guarantee the angular connection, the initial nodes can always be connected to some node. 
+At the beginning of the process, there will be few restrictions to find free nodes that meet the connectivity conditions.
+But the more nodes are joined, the less likely it is that subsequent nodes will be connected.
+Since connecting nodes means reducing the space of connection possibilities for the following nodes.
+This can result in situations where a node can find any node that guarantees the geometrical connection and has so many fixed nodes surrounding it that it is not possible to create a new node to connect, leaving this node unconnected.
+Therefore, randomness cannot be allowed to control the generation of the structure. 
+
+Under the premise that the generation of the structure cannot be dominated by uncertainty, the need arises that the generation of the structure must be driven by the conditions to be met.
+The conditions to be met by the structure are very restrictive, so it is necessary to control the creation of the structure at all times. 
+To do this, instead of randomly creating points and joining them together, start from a state with an empty volume and fill it with points that ensure that all conditions are met. 
+In this way, it is ensured that the points are optimally distributed according to the constraints.
+
+\section{Layer generation}
+\subfile{1_layer_generation/layer_generation}
+
+\section{Density reduction}
+\subfile{2_density_reduction/density_reduction}
+
+\section{Adapted tessellation}
+\subfile{3_adapted_tessellation/adapted_tessellation}
+
+\section{Holes implementation}
+\subfile{4_holes_implementation/holes_implementation}
+
+
+\end{document}

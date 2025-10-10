@@ -1,0 +1,331 @@
+\documentclass[../../../main.tex]{subfiles}
+\begin{document}
+
+In the previous section, it was demonstrated that the viability of a solution cannot depend entirely on chance.
+The use of uniform random point generation was ruled out in favour of Poisson-disk distribution because it was found that randomness had to be conditioned to make it viable. 
+Even so, there is still too much variability in all aspects. 
+
+In addition, the importance of the distribution of node connections was noted, and it was concluded that ensuring the continuity of the graph structure is not sufficient for the solution to be viable. 
+Node connections can be classified as upper and lower depending on whether the connection is made with a point above or below it.
+If a node only has one or two connections, above or below, it is not structurally stable. 
+Each node should have at least four upper and lower connections to restrict its displacement when faced with the maximum possible load. 
+Furthermore, ideally, these connections should be distributed around the node. It is useless if a node has many connections, but they all have the same orientation.
+Finally, it was observed that controlling the length of the connections is also necessary to avoid intersections between edges.
+
+In this subsection, a method derived from the previous one is proposed. 
+The previous approach relied on full randomness to place the points and, as a result, many of the points were not placed in the correct locations and became isolated or lost continuity.
+This method focuses on controlling the randomness to ensure that the randomly generated points end up in a more optimal location. 
+To do this, a smaller number of points are generated in the volume, which, together with the points on the surface of the volume, will serve as seeds. 
+From these seeds, it will be evaluated whether there are nearby points to join and if not, new points will be generated around these seeds at optimal locations.
+In this way, the points are generated randomly but are modified to be valid, so this method has been considered pseudo-random.
+
+
+\subsection{Random points generation on a spherical cap}\label{sec:random_gen}
+
+It was noted that the position in which the nodes are generated is crucial to ensure the continuity of the system. 
+Many points fall in locations that are not valid. Therefore, this methodology proposes to be able to modify these nodes to positions that are valid and can generate connections. 
+If there are no points to modify, they can be generated during execution.
+Those points generated during the execution would lie within an area that has been called the solution space. 
+As done in the previous section, the connections of each node will be generated only upwards to avoid redundancies. 
+The connections below a node are assured since the connections are reciprocal: if a node, $n_1$, is connected to another, $n_2$, above it, node $n_2$ is assured of a connection below with node $n_1$. 
+Also, in the previous section, it was seen that it is important to keep connections as short as possible to avoid intersections. 
+Therefore, the points generated from a node will be at a constant and common distance \textit{d} from that node. 
+Thus, the solution space will be shaped like a hemisphere. 
+However, within this solution space, only those that form a 45$^{\circ}$ angle will be valid, so instead of a hemispherical shape, the solution space will be shaped like a spherical cap as shown in \cref{fig:space_solution}.
+
+\begin{figure}[!htbp]
+    \centering
+    \input{imgs/space_solution.tex}
+    \caption{Illustration of the solution space for node \textit{n}. The area of valid solutions is shown in red.}
+    \label{fig:space_solution}
+\end{figure}
+
+However, instead of generating four random points in the solution space, it is proposed to divide the solution space into four quadrants and generate a random point in each quadrant.
+This ensures that the connections of each node are distributed around it, providing greater stability to the node. This ensures that each node has at least four connections above it. 
+This ensures that the connections of each node are distributed around it, providing greater stability to the node.
+Quadrants are defined as a Cartesian coordinate system projected onto the solution space, and their designation follows the same criteria as the Cartesian system, \cref{fig:quadrants}. 
+To find out which quadrant a point belongs to, the vector connecting that point to the node is obtained, and depending on the sign of its \textit{x} and \textit{y} coordinates, it will be classified in a quadrant.
+
+\begin{figure}[!htbp]
+    \centering
+    \input{imgs/quadrants.tex}
+    \caption{Definition of the four quadrants and the coordinate signs in each of them. }
+    \label{fig:quadrants}
+\end{figure}
+
+\cref{fig:quadrants_ex} shows an example of how four points distributed in each of the quadrants would look from an isometric and floor plan.
+This is the goal to be achieved. But to achieve it, it is first necessary to be able to generate random points within each of the quadrants. 
+At this point, randomness can be used as a resource because the possible results have been narrowed down so much that any one of them will be valid. 
+
+\begin{figure}[!htbp]
+    \centering
+    \input{imgs/quadrants_ex.tex}
+    \caption{Illustration of the solution space for node \textit{n}. The area of valid solutions is shown in red.}
+    \label{fig:quadrants_ex}
+\end{figure}
+
+To generate points randomly within each quadrant, it is first necessary to be able to generate points randomly on the surface of a sphere. 
+Then, by restricting the angle $\varphi \in [\pi/4, \pi/2]$ and $\theta$\footnote{$\mathcal{Q}_I \in [0,\pi/2],\:\mathcal{Q}_{II} \in [\pi/2, \pi], \:\mathcal{Q}_{III} \in [\pi, 3\pi/2]\: and\: \mathcal{Q}_{IV} \in [\pi, 2\pi] $} (\cref{fig:space_solution}) to the values of the angles corresponding to each quadrant, points can be generated in any quadrant.
+
+When attempting to evenly distribute points on a sphere, one might be inclined to use uniform distributions for $\varphi \in [0,\pi]$. 
+However, this approach is flawed since the area element $d\Omega = \sin(\varphi) d\varphi d\theta$ (\cref{fig:surface_dif}) varies with $\varphi$, leading to point clustering near the poles.
+Therefore, the transformation that a surface suffers when changing from Cartesian to polar coordinates, and vice versa, must be taken into account. 
+There are many different methods proposed for distributing points uniformly over the surface of a sphere based on spatial transformations \cite{Marsaglia1972, Tashiro1977}.
+Below, a method based on probabilistic analysis is proposed.
+
+\begin{figure}[!htbp]
+    \centering
+    \input{imgs/surface_dif.tex}
+    \caption{Surface element in spherical coordinates.}
+    \label{fig:surface_dif}
+\end{figure}
+
+Let the probability of a point lying in an infinitesimal spherical surface, $d\Omega$, be
+\begin{equation}
+   P(\Omega)d\Omega = P(\theta, \varphi)d\theta d\varphi \label{eq:ds_1}
+\end{equation}
+
+Then
+\[
+\int_\varphi \int_\theta P(\Omega) d \Omega=1.
+\]
+Since the surface area of a sphere is $4\pi R^{2}$, the probability density function for uniform density over a unit sphere becomes
+\[
+P(\Omega) = \frac{1}{4\pi}.
+\]
+If this expression is substituted in \cref{eq:ds_1}, the following is obtained:
+\begin{gather*}
+\frac{1}{4 \pi} \sin \varphi d \theta d \varphi=P(\theta, \varphi) d \theta d \varphi\\
+P(\theta, \varphi) = \frac{\sin(\varphi)}{4\pi}.
+\end{gather*}
+
+\noindent Therefore,
+\begin{gather*}
+P(\varphi)=\int_0^{2 \pi} P(\theta, \varphi) d \theta=\frac{\sin \varphi}{2} \\ P(\theta)=\int_0^\pi P(\theta, \varphi) d \varphi=\frac{1}{2 \pi}
+\end{gather*}
+
+Now, random values of $\varphi$ and $\theta$ can be generated from their cumulative densities functions, $F(\varphi)$ and $F(\theta)$:
+\begin{equation}
+\begin{gathered}
+F(\varphi)=\int_0^\varphi P(\varphi) d \varphi=\int_0^\varphi \frac{\sin \varphi}{2} d \varphi=\frac{1-\cos \varphi}{2} \\ 
+F(\theta)=\int_0^\theta P(\theta) d \theta=\int_0^\theta \frac{1}{2 \pi} d \theta=\frac{\theta}{2 \pi}
+\end{gathered}\label{eq:ds_2} 
+\end{equation}
+
+To uniformly distribute points across a sphere so that each small area contains an approximately equal number of points, we select two random variables, \textit{u} and \textit{v}, that are uniformly distributed over the interval $[0,1]$.
+Then, let $v = F(\varphi)$ and $u = F(\theta)$ be uniform random variables on $\mathcal{U}[0,1]$.
+Solving \cref{eq:ds_2}, the following inverse functions are obtained:
+
+\begin{gather*}
+F^{-1}(v)=\varphi=\cos ^{-1}(2 v-1) \\ 
+F^{-1}(u)=\theta=2 \pi u .
+\end{gather*}
+
+Now, uniform points can be generated using:
+\begin{gather*}
+x=r \sin \varphi \cos \theta  = r\sin(\cos ^{-1}(2 v-1))\cos(2 \pi u)\\ 
+y=r \sin \varphi \sin \theta = r\sin(\cos ^{-1}(2 v-1))\sin(2 \pi u)\\ 
+z=r \cos \varphi = r \cos(\cos ^{-1}(2 v-1))
+\end{gather*}
+
+Two figures are shown below illustrating the difference between two distributions of random points on the surface of a sphere: one generated by uniform random values of angles $\theta$ and $\varphi$ (\cref{fig:incorrect_dist}) and the other taking into account the transformation of spherical coordinates (\cref{fig:correct_dist}).
+
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[b]{0.25\textwidth}
+        \centering
+        \\includegraphics[width=\textwidth]{imgs/no_sup.svg.pdf}
+        \caption{Top view.}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.26\textwidth}
+        \centering
+        \\includegraphics[width=\textwidth]{imgs/no_front.svg.pdf}
+        \caption{Side view.}
+    \end{subfigure}
+    \caption{Example of an incorrect distribution of points in a sphere. } 
+    \label{fig:incorrect_dist}
+\end{figure}
+
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[b]{0.28\textwidth}
+        \centering
+        \\includegraphics[width=\textwidth]{imgs/si_sup.svg.pdf}
+        \caption{Top view.}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.25\textwidth}
+        \centering
+        \\includegraphics[width=\textwidth]{imgs/si_front.svg.pdf}
+        \caption{Side view.}
+    \end{subfigure}
+    \caption{Example of a correct distribution of points in a sphere.} 
+    \label{fig:correct_dist}
+\end{figure}
+
+Once it is possible to determine the quadrant to which a point belongs and it is also possible to generate points uniformly within a sphere. 
+Points can be generated directly on the surface of a spherical cap in each of the quadrants by limiting the range of angles $\theta$ and $\varphi$.
+In the \cref{fig:dist_quad}, the uniform distribution of 1000 points on each quadrant is shown.
+The points belonging to each quadrant are colourised accordingly\footnote{$\mathcal{Q}_I: red,\:\mathcal{Q}_{II}: yellow, \:\mathcal{Q}_{III}: green \: and\: \mathcal{Q}_{IV}: blue.$}, and the node is shown in black at the centre of the sphere.
+
+\begin{figure}
+    \centering
+    \\includegraphics[width=0.3\textwidth]{imgs/dist_cap.svg.pdf}
+    \caption{Example of uniform distribution of points among each quadrant.}
+    \label{fig:dist_quad}
+\end{figure}
+
+\subsection{Pseudo-random connections}\label{sec:pseudorand}
+
+Once it has been explained how new random points will be generated when needed.
+The flow of operations of this methodology will be introduced. 
+The initial state is composed of the points on the surface of the volume and \textit{n} randomly generated points within the volume, as shown in \cref{fig:rand_pts}.
+Points that belong to the surface of the volume will be called <<fixed points>>, since they will be considered as immovable.
+And, points randomly generated will be considered as <<not fixed points>>, and they can be moved at will.
+This is done to preserve the topology of the volume.
+
+\begin{figure}
+    \centering
+    \\includegraphics[width=0.7\textwidth]{imgs/random_pts.svg.pdf}
+    \caption{Example of initial state. Orange points represent the points of the volume's surface, while blue points are those generated randomly.}
+    \label{fig:rand_pts}
+\end{figure}
+
+Once the set of initial points has been obtained, they are ordered according to their \textit{z}-coordinate in increasing order. 
+And then iterate over each point: for each of them, all the neighbouring points within a radius \textit{r} are retrieved, and those below them are discarded.
+The remaining points are also distinguished into fixed and non-fixed points.
+In addition, a counter list of the available quadrants is initialised each time a new point is evaluated.
+This list will help to keep track of the quadrants in which each point has a connection created and ensure that all points have a connection in each of the quadrants.
+Then, the fixed points found are checked to see if any of them meet the angularity condition and can be connected to the evaluated node. If so, it is determined in which quadrant the fixed point is located, the connection is created, and the quadrant is removed from the list of available quadrants.
+
+Once the fixed points have been checked, if any higher points are not fixed and there are still quadrants available, the non-fixed points are analysed, and the following situations may occur:
+
+\subsubsection{The angle it forms with the node is greater than or equal to $45^{\circ}$ and the point is in an available quadrant}
+
+This is the most straightforward situation, as all the necessary conditions are met for the connection to be created. 
+So the connection is created, and the corresponding quadrant is removed from the list of available quadrants (\cref{fig:sit_1}).
+
+\begin{figure}[!htbp]
+    \centering
+    \input{imgs/situation_1.tex}
+    \caption{Illustration of a situation where the angle the candidate point forms with the node is greater than or equal to $45^{\circ}$ and the point is in an available quadrant.}
+    \label{fig:sit_1}
+\end{figure}
+
+\subsubsection{The angle it forms with the node is greater than or equal to $45^{\circ}$ and the point is in an occupied quadrant}
+
+This situation occurs if two or more points are in a quadrant and one of them already has a connection to the node created. In these cases, the unconnected point is moved to a random position within another available quadrant (\cref{fig:sit_2}). Once there, the connection is created and the new quadrant is removed from the list.
+
+\begin{figure}[!htbp]
+    \centering
+    \input{imgs/situation_2.tex}
+    \caption{Illustration of a situation where the angle the candidate point forms with the node is greater than or equal to $45^{\circ}$ and the point is in an occupied quadrant.}
+    \label{fig:sit_2}
+\end{figure}
+
+\subsubsection{The angle it forms with the node is lower than  $45^{\circ}$}
+
+In this situation, it doesn't matter which quadrant the point is in because its position is incorrect anyway. So, in these situations, the point is moved to one of the available quadrants in a random position, as in the previous case (\cref{fig:sit_3}).
+
+\begin{figure}[!htbp]
+    \centering
+    \input{imgs/situation_3.tex}
+    \caption{Illustration of a situation where the angle the candidate point forms with the node is lower than $45^{\circ}$.}
+    \label{fig:sit_3}
+\end{figure}
+
+Every time a non-fixed point is connected to a node, it becomes a fixed node, so the following could join to it but not move it, assuring the connection with the first node.
+Once all the points found above the node, there may be available quadrants remaining.
+Then, a random point is generated in each of these quadrants. This situation is common for points belonging to the surface. 
+These points do not have four available quadrants but rather two, since the other two are outside the volume. 
+If this is the case, all the points of the surface within a radius \textit{r} are retrieved and checked to see if any of them lie on any available quadrant. 
+If not, this point is left with unfilled quadrants.
+While it is true that this case is common among surface points, it can also occur in non-surface points.
+This is not a problem because other points will be connected to those points, and those points will end up with more than two connections.
+This whole process is repeated until the top is reached, meaning that the volume is filled.
+
+In the \cref{fig:color_nodes_1} and \cref{fig:color_nodes_2}, two final structures obtained from the initial points in \cref{fig:rand_pts} are shown.
+\cref{fig:color_nodes_1} was obtained using a radius r = 0.5 $mm$ and \cref{fig:color_nodes_2} using a radius r=1 $mm$.  
+Both figures show the connectivity of the coloured nodes according to the number of connections they have. 
+The red points are nodes that have only one connection and should therefore be eliminated. 
+It can be seen that these points are located at the top base of the volume, and these points cannot have higher connections.
+Also, it can be noticed that some points on the bottom surface only have two connections due to they cannot have connections beneath.
+In the first image, the number of connections at each node is more uniform because the search radius is smaller and the nodes are joined with the closest nodes. 
+But the larger the search radius, the greater the probability that a node connects to more distant nodes, and the more connections accumulate in fewer nodes.
+
+\begin{figure}
+    \centering
+    \\includegraphics[width=0.7\textwidth]{imgs/color_nodes_1.svg.pdf}
+    \caption{Example of initial state. Orange points represent the points of the volume's surface, while blue points are those generated randomly.}
+    \label{fig:color_nodes_1}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \\includegraphics[width=0.7\textwidth]{imgs/color_nodes_2.svg.pdf}
+    \caption{Example of initial state. Orange points represent the points of the volume's surface, while blue points are those generated randomly.}
+    \label{fig:color_nodes_2}
+\end{figure}
+
+The first structure is initialised with 527 fixed points and 773 non-fixed points. At the end, the structure has 2357 points, so 1057 new points have been generated. The number of connections is 8000.
+The second structure is initialised with 527 fixed points and 790 non-fixed points. At the end, the structure has 1336 points, so only 19 points have been generated. The number of connections is 4356.
+This decrease is also due to the search radius. The larger the search radius, the more points are retrieved, and therefore the higher the probability of creating a connection. Also, because the points that are generated are higher, fewer points are needed to reach the upper base of the volume. Nevertheless, the number of connections is very high and increasing the radius also increases the probability of crossing edges.
+While the middle connections tend to be longer.
+
+
+\cref{fig:lengths_1} shows the distribution of the lengths of the edges in \cref{fig:color_nodes_2}. 
+It can be seen that the distribution is uniform. 
+Lengths of less than 0.4 \textit{mm} predominate, which mainly correspond to the connections between points on the surface.
+
+\begin{figure}
+    \centering
+    \\includegraphics[width=1\textwidth]{imgs/lengths_1.svg.pdf}
+    \caption{Example of initial state. Orange points represent the points of the volume's surface, while blue points are those generated randomly.}
+    \label{fig:lengths_1}
+\end{figure}
+
+Although this method ensures that all nodes are mostly connected to the top four points, there are still nodes that have no connections below, or have less than four connections below, see \cref{fig:no_edges}. 
+Some of the initial points (seeds) may be surrounded by a few points and are not located in any valid position for any lower point, causing no other point to connect to them.  
+To avoid this, once the main loop is finished, all points are looped back from top to bottom. 
+This time, connections will be sought below each of the points to generate connections in all four quadrants below each point. 
+In this process, no new points will be generated, only connections will be created with lower nodes that meet the angularity condition and are in available quadrants.
+
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \fbox{\includegraphics[width=\textwidth]{imgs/no_edges.png}}
+        \caption{Detail of a node without connections below it.}
+    \end{subfigure}
+    \hspace{1cm}
+    \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \fbox{\includegraphics[width=\textwidth]{imgs/one_edge.png}}
+        \caption{Detail of a node with just one connection below it.}
+    \end{subfigure}
+    \caption{Example nodes with less than four connections underneath. } 
+    \label{fig:no_edges}
+\end{figure}
+
+Although the double running of the structure improves the connectivity of the points, it does not ensure that all points have four connections underneath. 
+It may be that the same situation that has caused a point to have no connection underneath on the outward run will happen again on the return run. 
+Or it may be that some inferior connection is found, but not the four necessary ones, since no new points are generated in the return processing. 
+And it is this generation of new points that ensures that the points have four connections above.
+\cref{fig:color_nodes_3} shows the connectivity of the nodes after the two run process.
+Nodes with fewer than eight connections are coloured in red. 
+That validates the premise that even with a second run, correct connectivity is not guaranteed by this method.
+While it is true that most of the nodes with fewer than eight connections are points that belong to the surface, there are other poorly connected nodes that are not.
+
+\begin{figure}
+    \centering
+    \\includegraphics[width=0.7\textwidth]{imgs/color_nodes_3.svg.pdf}
+    \caption{Example of initial state. Orange points represent the points of the volume's surface, while blue points are those generated randomly.}
+    \label{fig:color_nodes_3}
+\end{figure}
+
+In addition, as previously indicated, the number of connections generated is excessively large, causing many edges to intersect. 
+Furthermore, although it is true that this method allows the position of the nodes to be controlled by adjusting them to valid positions, it does not take into account the surroundings of the area in which a node is going to be generated, thus generating nodes that are very close to each other. 
+Both situations can be seen in \cref{fig:no_edges} \textcolor{blue}{(b)}.
+The two nodes on the back right are located too close to each other, and the lower one has a high connectivity, which causes their edges to cross.
+Therefore, another solution that generates fewer connections should be explored to reduce the number of intersections between edges.
+
+\end{document}

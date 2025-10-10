@@ -1,0 +1,433 @@
+\documentclass[../../../main.tex]{subfiles}
+\begin{document}
+At the beginning of the previous section, it was stated that one option to keep the density of points constant in each layer, so in the whole structure, was to remove points under some criteria. 
+Once explained and evidenced, the logic implemented to do so, it was seen that the result obtained was not the expected one. 
+Hence, the need to find a new method to reduce the density of points was raised, and it was argued that this method cannot be based on removing or moving points to guarantee the fulfilment of the conditions.
+Broadly speaking, the procedure explained so far is based on two principles: triangulation of points and generation of vertices from the triangles created. 
+It was shown in previous sections that \textit{n} vertices generate approximately \textit{2n} triangles and that for each triangle, a point is generated. 
+The aim of the algorithm implemented in the previous section was to reduce the \textit{n} points to \textit{n/2}, but this proved to be useless. 
+Therefore, if the number of points cannot be halved, it only remains to be able to halve the number of triangles. 
+Thus, as each triangle generates one point, the number of points in the next layer is indirectly reduced.
+
+The task of controlling the number of triangles in a tessellation is very complex. This is because not all geometric figures can be used to tessellate a plane, as not all of them can fill it without leaving empty or overlapping spaces. 
+For example, for regular periodic tessellations\footnote{Regular tessellations are those that are made up by regular polygons, all of the same shape. Only equilateral triangles, squares and hexagons can be used.} only three regular tessellations can be created from equilateral triangles, squares, or regular hexagons.
+In the case of semi-regular periodic tessellations\footnote{Semi-regular tessellations use more than one regular polygon.}, only eight combinations\footnote{See \href{https://en.wikipedia.org/wiki/Euclidean\_tilings\_by\_convex\_regular\_polygons\#Archimedean,\_uniform\_or\_semiregular\_tilings}{Archimedean, uniform or semiregular tiling}} of figures can be used.
+Outside regular tessellation, irregular tessellation offers more options for tiling a plane, as convex and non-convex polygons can be used, although they are still finite. 
+Some types of irregular tessellation use a combination of convex and non-convex polygons to tile the plane, such as Polyominoes\footnote{A \href{https://en.wikipedia.org/wiki/Polyomino}{polyomino} is a plane geometric figure formed by joining one or more squares, for example, the figures in the Tetrix game. However, a generic plane figure formed by joining identical polygons is called polyform.}, but usually a combination of a few polygons is used. 
+But even using any geometry, not all geometries can tile a plane. And it is impossible to control in advance the number of tiles that will be used to tile a defined domain using only a few types of polygons. 
+Therefore, to control the number of tiles needed to tile a plane, as many different polygons must be used as the number of tiles needed, or fewer.
+At the time of writing, to the author's knowledge, there is no algorithm capable of tessellating a set of points with a given number of figures. Some algorithms tessellate a domain with many irregular polygons, one example of this is the \href{https://en.wikipedia.org/wiki/Voronoi_diagram}{Voronoi diagram}. 
+The Voronoi diagram is capable of controlling the number of polygons generated, since it grows a polygon from each seed. 
+But it is not useful in this case because the polygons that generates do not link the points. 
+The algorithm proposed is inspired by the Delaunay tessellation and the polyforms. 
+The idea behind it is to tile each section with a constant number of polyforms that contain all the points.
+To do so, it modifies a Delaunay tessellation until the number of polygons desired is reached.
+While it is true that the polyforms generally are made up of identical polygons, the algorithm proposed is not limited to using only one type of polygon.
+So, technically, the polygons used could not be considered as polyforms, but the concept is the same.
+
+The algorithm's workflow starts with the Delaunay tessellation of the points in the layer. 
+It was chosen due to it is widely used in computational geometry, so it is optimized and has a low computational cost. 
+Once the tessellation is obtained, the area of each triangle in the three-dimensional space is calculated. 
+This is done to avoid situations where the projection of the triangle would look small due to the orientation of the triangle.
+To calculate the area of a generic triangle in three-dimensional space, the Shoelace formula is used:
+
+\begin{equation}
+    A=\frac{1}{2} \sum_{i=1}^n\left(x_i y_{i+1}-x_{i+1} y_i\right)=\frac{1}{2} \sum_{i=1}^n\left|\begin{array}{ll}
+    x_i & x_{i+1} \\
+    y_i & y_{i+1}
+    \end{array}\right|
+\end{equation}
+Where $A$ is the area of the triangle, $n$ is the number of vertices of the triangle, $x_i$ and $y_i$ are the coordinates of the $i$-th vertex of the triangle, and $x_{n+1}$ and $y_{n+1}$ are the coordinates of the following vertex of the triangle. The Shoelace formula requires the vertices to be ordered in a clockwise or counterclockwise direction. 
+So, previously to calculate the area of the triangle, the vertices are ordered in a counterclockwise direction by its polar angle, in the plane that contains each triangle, measured from the centroid of the triangle.
+The \textcolor{blue}{Figure} \ref{fig:polar_sort} shows an example of the measure of the polar angle of the vertices from the centroid of the triangle. 
+To calculate it, the arc tangent of the vector that goes from the centroid to the vertex is used. 
+Once the area of each triangle is calculated, they are sorted by their area in increasing order.
+
+\begin{figure}[!htbp]
+    \centering
+    \input{imgs/polar_angle.tex}
+    \caption{Illustration of the measure of the polar angle of the vertices from the centroid of the triangle.}
+    \label{fig:polar_sort}
+\end{figure}
+
+Once all the triangles are sorted by their area, an iterative loop starts merging polygons until the number of polygons desired is reached, which is passed as an argument to the algorithm. 
+This loop selects the triangle with the smallest area, which will always be the first element of the sorted list, and looks for its neighbouring triangles. 
+To find the neighbouring triangles, the vertices of the triangle are compared with the vertices of the rest of the triangles. 
+If two triangles share two vertices, they are considered neighbours. 
+Each triangle has three neighbours, except the outer triangles, which have two.
+Then, the area of each of the neighbouring triangles is retrieved from the sorted list, and the triangle with the smallest area is merged with the selected triangle.
+The area of the new polygon is calculated by adding the area of the two triangles.
+And this area is added to the sorted list of areas in the correct position.
+Also, the areas of the merged triangles are removed from the list.
+So, the new first element will be the current smaller triangle. 
+From now on, there won't only be triangles, so the simplices will be called polygons instead of triangles.
+This process is repeated until the number of polygons is equal to the initial one, so each layer has the same number of polygons.
+The different parts of the algorithm will be explained in detail in the following sections.
+
+\subsection{Merging polygons}
+
+At the beginning of the loop, merging the polygons is a simple task, as all the polygons are triangles. 
+But as the number of polygons decreases, the task becomes more complex because the polygons become mainly non-convex.
+In fact, there are often situations in which polygons are no longer polygons, since the union between a non-convex polygon and a convex polygon can generate a figure containing points inside it.
+One example of this is shown in the \textcolor{blue}{Figure} \ref{fig:merge}.
+It should be noted that this is not really a problem since, for the algorithm to work it is only necessary to know the points belonging to each set that represent each of the bases of the future pyramids.
+Solving this problem only helps to visually represent the tiling but does not affect the robustness of the algorithm.
+
+\begin{figure}[!htbp]
+    \centering
+    \input{imgs/merge.tex}
+    \caption{Example of the union between a non-convex polygon and a convex polygon generates a figure that is not a polygon.}
+    \label{fig:merge}
+\end{figure}
+
+Since there is no implemented algorithm to represent this tessellation, it has to be done by drawing lines between the points in their correct order.
+And to do so, the points that make up the polygons must be ordered in the correct order, clockwise or counter-clockwise.
+This is not a problem when the polygons are convex, but it is when they are not.
+Given a set of points, $V = \{v_1, v_2, ..., v_n\}$, only exists one convex figure that can be formed by them, the convex hull, which is the smallest convex polygon that contains all the points.
+But, if the points form a non-convex polygon, many possible polygons can be formed by them.
+Therefore, there is no single way to order the points in a non-convex polygon, so they cannot be ordered by their polar angle, because there is no guarantee that the points are ordered in the correct way, or in any other way than by hand.
+An example of this is shown in the \textcolor{blue}{Figure} \ref{fig:non_convex}.
+Thus, as mentioned above, the points of each triangle in the Delaunay tessellation are ordered clockwise by their polar angle, so that the polygons can be merged while maintaining this order. 
+This ensures that the points of the new polygon will be arranged in the desired order.
+To facilitate this task, instead of working with the points, their index in the initial list that contains all the points is used.
+
+\begin{figure}[!htbp]
+    \centering
+    \input{imgs/non_convex.tex}
+    \caption{Example of the different non-convex polygons that can be obtained from a set of points.}
+    \label{fig:non_convex}
+\end{figure}
+
+\newpage
+The following is the procedure followed to merge the polygons in all possible cases:
+
+\subsubsection*{One common edge}
+
+This is the simplest case. To facilitate the explanation, the polygons will be called $A$ and $B$, where $A$ will always be the polygon with the smallest area and $B$ the neighbour of $A$ to be merged.
+Therefore, the common points will be referred to as $A$ and the non-common points as $B$.
+The first step is to find which are the common and uncommon indices between the two polygons.
+Once the common indices have been identified, the indices of $B$ must be inserted between the common values of $A$. For example, in the \textcolor{blue}{Figure} \ref{fig:merge_1}, a possible case is shown. 
+The common indices are $[3,2]$ and the non-common, to be inserted, in $B$ are $[4,1]$.
+Then, the position of the first common index, $[3]$, is identified in $A$. 
+And after this, all the non-common points present in $B$ are inserted.
+The order of the points in each of their sets must be preserved in the final set. 
+That is, once the positions of the common values in B have been obtained, the uncommon values must be extracted.
+To do so, the index of the first common value on the list is obtained, and the list of indices is shifted by this number of positions.
+Obtaining, thus, a list of indices where the first two elements are the common ones and the following ones are the non-common.
+Since the indices were ordered clockwise before, the non-common values will also be sorted the same way and, therefore, ready to be inserted into the list of indices of A.
+In the example, it would seem logical to eliminate the common points, [2,3], and insert the remaining ones, [1,4], in A. 
+But if this is done, the resulting polygon would not be ordered. 
+Proceeding as stated, the result in the example would be [4,1]. 
+Also, it should be noted that the first common point, $3$, may be in the last position and, therefore, the second common point, $2$, would be in the first position. 
+In that case, the intersection between the two sets would appear as $[2,3]$ instead of $[3,2]$, since it is returned according to the order of appearance in the first set. 
+Therefore, a pre-insertion step must be added to calculate whether indices are consecutive in the list. 
+If they are, the uncommon indices are inserted after the first common index.
+If not, they are placed after the second one, which should be the first one. 
+That is, if $A$ is $[2,5,3]$ and $B$ is $[1,2,3,4]$, the result must be $[2,5,3,4,1]$ and not $[2,4,1,5,3]$, otherwise the points won't be ordered.
+If the points are followed in order, from left to right, one can be able to see it.
+
+\begin{figure}[!htbp]
+    \centering
+    \input{imgs/merge_1.tex}
+    \caption{Example of the union between two polygons that share an edge.}
+    \label{fig:merge_1}
+\end{figure}
+
+\subsubsection*{More than one common edge}
+
+When more than one edge is shared between two polygons, the task becomes more complex. 
+The union of the polygons will generate a figure that is not a polygon, as shown in the \textcolor{blue}{Figure} \ref{fig:merge}, regardless of the number of shared edges.
+Due to the large number of different possible casuistries, no visually comprehensible way of representing this linkage was found. 
+Therefore, it was decided that the best way to deal with these cases is to insert the uncommon values after the first common value, keeping the correct order. 
+After the inserted values the last common value is added, and finally, the common values, which are neither the first nor the last, are added at the end of the list. 
+This does not allow the figure to be represented as it is, but by relying on the neighbouring polygons, they help to complete the hull of the figure visually. 
+However, this is not always the case when the number of shared sides is large. 
+Despite this, it should be re-emphasised that this does not affect the robustness of the algorithm as it only compromises the visualization of the tiling.
+An example of one of these cases is shown in the \textcolor{blue}{Figure} \ref{fig:merge_2} \textcolor{blue}{A}. 
+There, the common indices are $[5,4,3]$ and the uncommon ones are $[1,2]$.
+So, the non-commons are inserted after the first common index, $5$, the common indices that are neither the first neither the last, $[4]$ in the example, are added at the end. 
+When representing these figures, the first element of the list is replicated at the end of the list to close the figure, as shown in the \textcolor{blue}{Figure} \ref{fig:merge_2} \textcolor{blue}{B}.
+The edge between $6$ and $5$ is not represented in the figure, but since this figure will have a neighbouring polygon that will have this edge, it will be represented in the final figure.
+
+\begin{figure}[!htbp]
+    \centering
+    \input{imgs/merge_2.tex}
+    \caption{Example of the union between two polygons that share more than one edge.}
+    \label{fig:merge_2}
+\end{figure}
+
+\subsubsection*{All points in common}
+
+This case is a particular case of the previous one.
+Two polygons might share more than one edge, and all the points of one of the polygons are common to the other. In this case, the result is the bigger polygon. An example of this case is shown in the \textcolor{blue}{Figure} \ref{fig:merge_3}.
+
+\begin{figure}[!htbp]
+    \centering
+    \input{imgs/merge_3.tex}
+    \caption{Example of the union between two polygons that share all the points.}
+    \label{fig:merge_3}
+\end{figure}
+
+Once the different cases of merging polygons have been explained, an example of the final tessellation is shown in \textcolor{blue}{Figure} \ref{fig:tessellation_final}.
+As it is mentioned above, the final tessellation has as many polygons as the initial points, so the number of polygons is constant in each layer.
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=0.6\textwidth]{imgs/imagenes_numericas.png}
+    \caption{Example of the result of the merging polygon process. It can be seen that the number of polygons is constant among the iterations. }
+    \label{fig:tessellation_final}
+\end{figure}
+
+
+\subsection{Tetrahedra generation}\label{sec:tetrahedra_gen}
+
+Once the polygons are merged, the next step is to generate the vertices for each polygon.
+Since the polygons are not only triangles but a mixture of convex and nonconvex polygons, the vertices cannot be generated by \textcolor{blue}{Equation} \ref{opt:opt_problem}.
+The minimisation problem tries to find the point that satisfies the angular conditions with the minimum set of angles and is restricted to a domain that depends on the shape of the base of the polygon.
+In the case of a triangle, the domain has a cuboidal shape that stands out the base of the triangle, so the point can be placed anywhere in that cube, and it could be that the projection of the point lies outside the base of the triangle, as it is shown in the \textcolor{blue}{Figure} \ref{fig:optimization}.
+This could lead to a situation where the edges of two neighbouring tetrahedra intersect, which is not allowed.
+If only convex polygons are considered, this situation is really unlikely to happen because the point that minimises the angles of each edge normally has its projection inside the polygon and close to the centroid of the polygon.
+But in the case of non-convex polygons, this situation is really common since the centroid of the polygon is commonly outside the polygon.
+To avoid this situation, it is necessary for the vertices to be generated inside the polygon.
+In the \textcolor{blue}{Figure} \ref{fig:non_convex_tetra} is shown a possible situation is shown where the tetrahedra are generated from the merged polygon shown in the \textcolor{blue}{Figure} \ref{fig:merge_3}.
+To facilitate the comprehension of the figure, an example is shown where the tetrahedra generated are too close to each other, but they do not intersect.
+Despite this, this situation is also not allowed since the proximity condition would not be satisfied.
+In the figure, the approximated centroid of the polygons is represented as blurred points in the base; the position might not be real, but it helps to visualise the mentioned issue.
+
+\begin{figure}[!htbp]
+    \centering
+    \input{imgs/non_convex_tetra.tex}
+    \caption{Example of possible situation of two generated tetrahedron by the \textcolor{blue}{Equation} \ref{opt:opt_problem} from a non-convex polygon. The approximated centroid of the polygons is represented as blurred points in the base.}
+    \label{fig:non_convex_tetra}
+\end{figure}
+
+
+In order to find a point that satisfies the angular conditions while being inside the polygon, an attempt was made to modify the domain of the optimisation problem.
+But it was found to be easier to locate the pole of inaccessibility\footnote{See \href{https://en.wikipedia.org/wiki/Pole_of_inaccessibility}{Pole of inaccessibility} for deeper understanding} of the polygon, which is widely used in cartography. 
+Subsequently, determine the point located on the line created by the pole of inaccessibility and the normal vector of the horizontal plane. 
+This point should ensure that the vectors extending from it to the base vertices of the polygon, as well as the horizontal plane, meet the specified angular conditions.
+The pole of inaccessibility, PoI from now, is the point in a polygon that is the farthest from the edges of the polygon.
+In other words, it is the centre of the inscribed circle of maximum diameter of the polygon.
+To calculate it, the function \textit{polylabel}\footnote{\href{https://shapely.readthedocs.io/en/stable/manual.html\#shapely.ops.polylabel}{shapely.ops.polylabel}} from the \textit{Shapely} library is used, which calculates the approximate PoI for a given shapely's polygon object.
+Since figures such as those shown in the right figure of \textcolor{blue}{Figure} \ref{fig:merge_2} \textcolor{blue}{A} are not polygons, \textit{Shapely} does not allow them to be converted into a \textit{shapely polygon}. 
+So for such figures, the PoI is replaced by the centroid.
+A comparison between the PoI and the centroid of a non-convex polygon is shown in the \textcolor{blue}{Figure} \ref{fig:poi_centroid}. 
+And the comparison between the PoI and the centroid of each polygon of the tessellation shown in the \textcolor{blue}{Figure} \ref{fig:tessellation} \textcolor{blue}{B} is show in the \textcolor{blue}{Figure} \ref{fig:poi_centroid_tessellation}.
+It can be seen that when the polygon is convex, the centroid and the PoI are very close, or even the same point.
+By contrast, when the polygon is non-convex, the PoI is far from the centroid, lying always inside the polygon.
+
+\begin{figure}[!htbp]
+    \centering
+    \\includegraphics[width=0.5\textwidth]{imgs/111.svg.pdf}
+    \caption{Example of the pole of inaccessibility and the centroid of a non-convex polygon.}
+    \label{fig:poi_centroid}
+\end{figure}
+
+\begin{figure}[!htbp]
+    \centering
+    \\includegraphics[width=0.7\textwidth]{imgs/poi.svg.pdf}
+    \caption{Comparison between the pole of inaccessibility and the centroid of each polygon's tessellation.}
+    \label{fig:poi_centroid_tessellation}
+\end{figure}
+
+Once the PoI is calculated, the next step is to find the point that lies on the mentioned line that satisfies the angular conditions. 
+To do so, an iterative loop is used that moves a candidate point, initialised in the PoI,  along the line until the angular conditions are satisfied.
+This method also allows to control the search direction of the point, thus being able to adapt to bent geometries, whose vertical axis is not aligned with the vertical plane, or even geometries whose section is not constant along the vertical axis.
+For this purpose, instead of using the normal vector to the horizontal plane to define the direction of the line, a vector parallel to the vertical axis of the given geometry, called \textit{growing vector}, must be used.
+
+To calculate the growing vector, $\vec{v}$, from a given PoI, the homothetic transformation of this PoI is calculated on an upper section which is distant from the section containing it by a distance equal to the pore radius.
+For that purpose, the homothetic ratio, $k$, is calculated by dividing the perimeter of the section containing the PoI by the perimeter of the section where the projection of the PoI is supposed to be located. 
+Thus, if the geometry has a constant section along the vertical axis, $k =1$, the growing vector will be parallel to the vertical axis.
+But if not, the coordinates of the supposed PoI in the upper section are calculated by multiplying the coordinates of the PoI by the homothetic ratio plus the distance between sections $d$, as stated in the \textcolor{blue}{Equation} \ref{eq:homothetic}, and the growing vector is calculated by subtracting the coordinates of the PoI from the coordinates of the supposed PoI.
+For better understanding, a graphical representation of a generic growing vector is shown in the \textcolor{blue}{Figure} \ref{fig:growing_vector}; the geometry in the figure is bent, and its section is not constant along the vertical axis.
+It can be appreciated that the distance between the point $x'$ and $O_2$ is $k$ times the distance between the point $x$ and $O_1$.
+The subsequently found vertex is most likely not located at a distance equal to the pore radius as assumed, but this assumption serves as a basis for calculating the growth vector and thus relates to a design parameter. 
+However, this assumption means that geometries with very pronounced curvatures are not accepted by this methodology. 
+While it is true that since the pore radius is small, these geometries should be very strange and are unlikely to be present in nature.
+
+\begin{equation}
+    \begin{aligned}
+        \mathbf{x}^{\prime}=k \mathbf{x} + d
+    \end{aligned}
+    \label{eq:homothetic}
+\end{equation}
+
+
+\begin{figure}[!htbp]
+    \centering
+    \input{imgs/grow_vect.tex}
+    \caption{Graphical representation of the growing vector.}
+    \label{fig:growing_vector}
+\end{figure}
+
+The geometries whose section increases or decreases along the vertical axis also use the factor $k$ to modify the simplices returned by the tessellation algorithm to keep the density of polygons constant in each section.
+Although for that purpose, the number of simplices to be obtained is calculated as the product of the number of simplices of the previous layer and the square of the ratio of perimeters.
+Taking advantage of the fact that the \textit{trimesh} library is used to read the \textit{STL} file, the \textit{section} function is used to calculate the section of the volume at a given height, \textit{z}, and the \textit{length} property of this section to obtain its perimeter.
+
+
+\subsection{Shell and structure connection}\label{subsec:shell_struct_connection}
+
+At this point, the core of the structure is finally obtained, and an example of the final structure is shown in the \textcolor{blue}{Figure} \ref{fig:final_structure}.
+In the figure, it can be seen that the structure has some floating points, which are the points that have been taken from the shell of the geometry in order to adapt the structure to the geometry.
+In this way, the structure has no physical sense, and therefore, it has to be ensured that these points have a connection to other points, both above and below.
+To do this, the most obvious option is to connect the points of the shell to each other. 
+Thus, as the floating points are part of the shell, it would ensure that they are supported.
+For this purpose, the lateral points of the shell are isolated from the rest and iterated over.
+For each of these points, its closest points that are above itself and within twice the mean length of the lateral points are retrieved.
+From these retrieved points, it is checked if the connection meets the angular condition.
+If the connection intersects any other existing edge, and if the connection does not cross any edge closer than the minimum distance allowed.
+To check if a connection intersects, or crosses, any edge, the developed algorithm explained in the \textcolor{red}{previous section} is used.
+If all the conditions are met, the connection is added to the structure.
+For the shell shown in the \textcolor{blue}{Figure} \ref{fig:final_structure}, the connections are shown in the \textcolor{blue}{Figure} \ref{fig:shell_connections} \textcolor{blue}{A}.
+For better comprehension of the figure, only the connections between the lateral points are shown.
+From the figure, it can be observed that this method is not good enough, as the number of connections depends on the number of points in the surface, which can be very high depending on the meshing parameters used for the geometry.
+In addition, it cannot be guaranteed that the connections form a continuous structure, as can be seen in the figure, because the agglomeration of points may mean that the distance conditions are not met, or that some points do not meet the angular condition.
+Although at first glance it may seem that they do. On the other hand, the large number of connections can make it computationally very expensive to generate these connections.
+Therefore, a good option to reduce the number of connections might be to use only the shell points that are used during the generation of the structure as lateral points.
+But, as it can be seen in the \textcolor{blue}{Figure} \ref{fig:shell_connections} \textcolor{blue}{B}, the connections are not enough to ensure that the structure is continuous.
+It might be because of the distance between points or their relative position.
+
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[b]{0.6\textwidth}
+        \centering
+        \\includegraphics[width=\textwidth]{imgs/shell.svg.pdf}
+        \caption{Connections between the lateral points of the shell.}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.6\textwidth}
+        \centering
+        \\includegraphics[width=\textwidth]{imgs/shell_2.svg.pdf}
+        \caption{Connections between the lateral points of the shell that are used as lateral points during the generation of the structure.}
+    \end{subfigure}
+    \caption{Example of the connections between the lateral points of the shell. } 
+    \label{fig:shell_connections}
+\end{figure}
+
+
+To solve this issue, several methods, or variations of the methods mentioned above, were studied, but none of them were able to ensure that the structure was continuous.
+The only method that ensured the continuity of the structure was to shift the outer points of each layer to the shell, thereby merging both.
+Since these points are connected to other points both above and below, when moving them to the shell, these connections will remain, so the structure will be continuous.
+The problem with this method is that when the points are shifted, the angular condition may not be fulfilled.
+To avoid such situations, it was analysed how much these points are usually displaced to see how much their angles could vary to compensate for this potential variation.
+Various geometries were analysed, and it was found that, in general, the displaced distance is about 30 \% of the pore radius, with maximum displacements of 50 \%.
+The angle variation due to this displacement can be calculated geometrically as follows.
+Consider a general situation such as the one shown in the \textcolor{blue}{Figure} \ref{fig:angle_variation}. 
+Since the points are moved to the shell, the closest point between any point and the shell is the projection of the point on the shell. 
+Thus, the position of this point in the shell is calculated by projecting the point on the shell, so the displacement will be always perpendicular to the shell, as it is shown in the figure.
+Let $d$ be the distance between the point and the shell, $h$ the length of the edge, and $\alpha_1$ the angle of the edge with the horizontal plane, these three values are known a priori.
+As mentioned, the point displacement is horizontal so $y = h\sin(\alpha_1)$ will remain constant, and the component $x = h\cos(\alpha_1)$ will increase by $d$.
+Then, the following equation can be written:
+
+\begin{equation}
+    \begin{aligned}
+        \alpha_2 = \arctan \left (\frac{h\sin(\alpha_1)}{h\cos(\alpha_1) + d} \right )
+    \end{aligned}
+    \label{eq:angle_variation}  
+\end{equation}
+
+And the angle variation, $\Delta\alpha$, can be calculated as $\Delta\alpha = \alpha_2 - \alpha_1$. 
+Using the structure from the \textcolor{blue}{Figure} \ref{fig:final_structure} as an example, its mean value of the length of the edges and the displacements produced is approximately 8 $mm$ and 1.6 $mm$, respectively, with a maximum displacement of 2.5 $mm$ using a pore radius of 5 $mm$.
+Thus, the mean angle variation calculated is $\Delta\alpha = 5 ^\circ $, and $\Delta\alpha = 10 ^\circ$ for the maximum displacement.
+Therefore, to compensate for this variation, the angular condition is increased by 10$^\circ$ to avoid breaking the angularity condition when the outer points move towards the shell to be able to use the last-mentioned method.
+
+\begin{figure}[!htbp]
+    \centering
+    \input{imgs/angle_variation.tex}
+    \caption{Point to shell displacement diagram.}
+    \label{fig:angle_variation}
+\end{figure}
+
+\subsection{Termination condition}\label{sec:termination_cond}
+
+Each time a new vertex is generated, it is checked if it is inside the volume. 
+If it is, the vertex is added as a new vertex that will serve as a base point for the next layer's polygons.
+If not, that means that the top of the volume has been reached, so the vertex is not added as a new vertex.
+Due to the fact that the heights of the tetrahedron in each layer are not equal, finding a proposed vertex that lies outside the volume does not mean that the top of the volume has been reached for the rest of the vertices.
+So, the algorithm will continue to generate vertices until all the proposed vertices are outside the volume.
+
+It would be expected that when a polygon generates a vertex that is outside the volume, it should be removed so that it does not constantly generate an invalid vertex. 
+But if the polygon is eliminated, or rather, if the points that form that polygon are not considered for future layers, what is actually being done is to reduce the number of points for the following layers and, therefore, generating other tetrahedra on top of these points, which may cause intersections between the edges. 
+Moreover, this would lead to a loss of continuity of the structure, as the points that are not considered will not be connected to any other points above them. This issue is illustrated in \textcolor{blue}{Figure} \ref{fig:draft_termination}.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\textwidth]{imgs/Figure_8.png}
+  \caption{ A) Example of a set of tetrahedra formed from a set of (delineated) bases. Bases that do not have a vertex represent bases that generate a vertex that is outside the volume. B) Example of bases obtained in the next layer without using the proposed logic. Here, as can be seen, there are certain points of the previous layer that are isolated, causing a loss of continuity. C) Example of bases obtained in the following layer of triangles, considering the bases that have not been able to generate the vertex of the previous layer.}
+  \label{fig:draft_termination}
+\end{figure}
+
+
+In the \textcolor{blue}{Figure} \ref{fig:termination} is shown a graphical representation of this termination condition.
+The orange points in the \textcolor{blue}{Figure} \ref{fig:termination} \textcolor{blue}{A} represent the points of the penultimate layer, and the red points represent the vertexes generated from this layer.
+As can be seen, the difference in the heights of the points of the layers causes the highest polygons not to generate a vertex because it would lie outside the volume.
+That is why the zone at the back is empty of red points.
+But, as mentioned above, the polygons that do not generate points are still considered for the next layer, so the vertex generated previously are connected to the base points that did not generate a vertex, as shown in the \textcolor{blue}{Figure} \ref{fig:termination} \textcolor{blue}{B}. 
+This ensures that the structure is continuous and that the edges do not intersect.
+Once all the polygons in a layer can no longer generate a vertex, the algorithm stops, and the points of the structure that have no connection above them are moved to the top of the volume, so the structure is closed.
+It could seem that by doing this, the angular condition can be violated, but it is not, since the points are moving vertically, and the angles can only increase.
+
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \\includegraphics[width=\textwidth]{imgs/prelast.svg.pdf}
+        \caption{Penultimate layer}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \\includegraphics[width=\textwidth]{imgs/last.svg.pdf}
+        \caption{Last layer}
+    \end{subfigure}
+    \caption{Example of the two last layers of a structure. Image \textbf{A} shows the points of the penultimate layer in orange and the vertices generated from this layer in red. Image \textbf{B} shows the last layer obtained from the vertices generated in the previous layer and the base points that did not generate a vertex; no vertices are generated from this layer because all would lie outside the volume. Grey points in both images represent the top points of the volume.}
+    \label{fig:termination}
+\end{figure}
+
+In addition, it was observed that some points generated outside the volume were too close to the upper surface and were discarded because they were outside. This caused the tetrahedra of the last layer to be very long and, therefore, their edges. 
+To improve this behaviour, a routine was implemented that assessed whether these points could be moved vertically to the surface without breaking the angularity condition. 
+To do so, when a vertex is generated outside the volume, the minimum angle of the edges of its tetrahedron is retrieved. 
+Then, the maximum vertical displacement allowed by this edge is calculated using the \textcolor{blue}{Equation} \ref{eq:delta-deduccion}. 
+The maximum permissible vertical displacement is understood to be the displacement of the candidate point that causes the edge angle to be 45$^{\circ}$. 
+A graphical explanation of the maximum displacement allowed is shown in \textcolor{blue}{Figure} \ref{fig:termination_demons}.
+
+\begin{figure}[!htbp]
+  \centering
+  \begin{minipage}[t]{0.4\textwidth}\vspace{0pt}
+    \centering
+    \input{imgs/termination.tex}
+    \caption{Geometric explanation of the maximum displacement allowed ($\delta$) for the nodes outside the volume.}
+    \label{fig:termination_demons}
+  \end{minipage}%
+  \hfill
+  \begin{minipage}[t]{0.4\textwidth}\vspace{0pt}
+    \centering
+    \begin{align}
+        B' &= B - \delta &&\Rightarrow && \delta = B - B' \nonumber \\
+        \tan(\alpha) &= \frac{B}{A} &&\Rightarrow && B = A \tan(\alpha) \nonumber \\
+        \tan(\alpha') &= \frac{B'}{A} &&\Rightarrow && B' = A \tan(\alpha') \nonumber \\
+        &&&\Rightarrow && \delta = A\left(\tan(\alpha) - \cancelto{1}{\tan(\alpha')}\right) \label{eq:delta-deduccion}
+    \end{align}
+  \end{minipage}
+\end{figure}
+
+In the \textcolor{blue}{Figure} \ref{fig:final_structure}, a comparison between before and after implementing this improvement is shown. It can be observed that the number of layers and points in the upper area of the volume increases, thus reducing the length of the struts in the upper layers. \textcolor{blue}{Figure} \ref{fig:final_structure} 
+\textcolor{blue}{B} also shows an example of the final graph-like structure obtained from this methodology. Once it is finished, the object obtained is converted into a \textit{NetworkX's} \footnote{\href{https://networkx.org/}{NetworkX} is a Python package for the creation, manipulation, and study of the structure, dynamics, and functions of complex networks.} graph. During this process, all edges of the structure are rechecked to ensure that they meet all conditions. If not, the problems are eliminated.
+
+
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \\includegraphics[width=\textwidth]{imgs/Figure_20.svg.pdf}
+        \caption{Before improvement}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.47\textwidth}
+        \centering
+        \\includegraphics[width=\textwidth]{imgs/Figure_1.svg.pdf}
+        \caption{After improvement}
+    \end{subfigure}
+    \caption{Comparison of two structures obtained before and after implementing the logic to improve the behaviour of the termination criteria routine. Image \textbf{A} shows a structure obtained without considering outside points as possible candidates. Image \textbf{B} shows a structure obtained after considering outside points as possible candidates.}
+    \label{fig:final_structure}
+\end{figure}
+
+
+\end{document}

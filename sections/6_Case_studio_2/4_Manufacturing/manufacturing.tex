@@ -1,0 +1,27 @@
+\documentclass[../../../main.tex]{subfiles}
+\begin{document}
+
+In the field of metal additive manufacturing, various technologies offer distinct material deposition and fusion strategies, each with its own advantages and limitations in terms of cost, precision, and resulting mechanical properties. 
+Among the most established is selective laser melting (SLM/DMLS), in which a high-power laser beam melts metal powder in a localised manner, layer by layer, on a powder bed. 
+This technique enables the production of parts with complex geometries and very high density, comparable to that of forged material. 
+However, it has drawbacks associated with the high cost of the process, the need for supports and heat treatments, as well as the occurrence of residual stresses.
+
+Faced with these limitations, direct deposition technologies such as WAAM (Wire Arc Additive Manufacturing) or DED (Directed Energy Deposition) offer alternatives based on the direct fusion of wire or metal powder using an electric arc or laser. 
+In the case of WAAM, the great advantage lies in the low cost of the process and high productivity, making it an interesting option for large components. 
+In addition, the parts obtained tend to have mechanical properties, particularly fatigue properties, that exceed those manufactured with SLM/DMLS.
+However, surface quality is limited, geometric accuracy is reduced, and, in the case of complex lattice structures, there is uncertainty as to whether the technology could adequately reproduce the desired geometry. 
+An additional motivation for considering WAAM was the possibility of non-planar printing, taking advantage of a previously developed G-Code trajectory generation module, which opened up an additional field of exploration in additive manufacturing outside the conventional flat layer scheme.
+Due to the complexity of the geometry, a 6-axis machine would be required to print the structure using WAAM. 
+The number of companies that have this type of machine is limited, as WAAM technology is not widely used. 
+Several companies based in the author's country that have this technology were contacted, but no positive response to collaborate was received.
+
+After a search for international partners, the French company Tetmet SAS\footnote{\href{https://www.tetmet.net/}{Tetmet}.} (Puteaux, France) was discovered. 
+Tetmet proposes a disruptive alternative through its process called ASLM (Adaptive Spatial Lattice Manufacturing). 
+Unlike traditional additive manufacturing techniques, ASLM is not based on layer-by-layer deposition, but rather on the construction of lattice structures from metal rods assembled and joined by robotically controlled spot laser welding. 
+This strategy eliminates the stratification characteristic of conventional 3D printing, which should translate into increased structural strength by avoiding layer interfaces that are often weak points under dynamic or fatigue loads. 
+In addition, the process is significantly more economical than SLM or WAAM, and allows for the exploration of new possibilities in the generation of optimised, lightweight and resistant spatial structures.
+
+Consequently, although the option of manufacturing the support using DMLS was initially considered, and WAAM was subsequently considered due to its greater mechanical robustness and lower cost, it was finally decided to opt for Tetmet's technology. 
+This choice was made for several reasons: the interest in exploring the potential of an emerging process with a completely different manufacturing strategy, the expectation of obtaining improved strength thanks to the elimination of layers and, very importantly, the possibility of further reducing production costs without compromising structural functionality.
+
+\end{document}

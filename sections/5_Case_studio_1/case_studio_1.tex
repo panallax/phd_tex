@@ -1,0 +1,46 @@
+\documentclass[../../main.tex]{subfiles}
+
+\begin{document}
+
+The first of the two objectives of this work is to generate non-regular bone scaffolds that can be printed without support material, have a controllable pore size, and can be printed using FDM. 
+Thanks to the methodology developed, it is possible to generate scaffolds that meet the desired conditions. 
+However, it is not enough to have the skeleton of these structures; it is also necessary to be able to print them in 3D. 
+
+Conventionally, 3D printers print parts layer by layer.
+To do this, a slicer is used to divide the part into slices and then generate the G-code that controls the printer to print each of the layers. 
+This code is a set of instructions that tells the printer how to move, where to move, at what speed, at what temperature, and a long list of other parameters that can be adjusted. 
+But in terms of the movements of the print head, it is always in the plane of each of the layers. 
+Layered printing of parts greatly facilitates manufacturing and allows the initial geometry to be reproduced with great precision. 
+Just as dividing an area into differentials in differential calculus allows that area to be recreated with a small error, layer printers are based on the same principle, although in this case there is a minimal inherent error since it is not possible to reduce the thickness of the layers infinitesimally.
+Printing methods based on material deposition tend to produce poorer final qualities compared to other methods, as they are unable to create very thin layers.
+
+The existence of these layers represents discontinuities in the material, as the layers are not bonded together but glued. 
+In addition, they cause the surface of the part to be of very poor quality, increasing the number of locations where cracks can form. 
+Therefore, the presence of layers makes the parts more fragile, especially in lattice structures, as they prevent the edges from bending. 
+Under low bending loads, the layers on the edges will delaminate, causing them to break. 
+To eliminate all the problems associated with the presence of layers, this work proposes printing the structures in a non-planar way. 
+In other words, the printer head can be moved along three axes during printing. 
+If it were possible to print the structure in this way, the mechanical strength of the parts would increase, as the edges would become solid elements rather than segment joints.
+To print in this way, two milestones must first be achieved:  
+
+\begin{itemize}
+    \item Slicers are designed to divide geometries into layers and generate G-code from them. Therefore, they are not capable of generating the G-code to print in the desired way. So you will have to write your own G-code that allows you to print in the air. Taking advantage of the fact that the generated structure is stored as a graph, you must write a routine that allows you to traverse the graph while depositing material.
+
+    \item Conventional printers are not designed to print in this way, so a different print head must be used that allows printing without colliding with the already printed parts. The print heads commonly used are flattened as they facilitate layered printing, but in non-planar printing, an elongated extruder must be used that can be inserted into the already printed part without colliding.
+\end{itemize}
+
+Therefore, this chapter will explain how each of the objectives was achieved and all the challenges they presented. 
+Lastly, the results obtained and the conclusions drawn during the process will be discussed.
+
+
+
+\section{Non-planar G-code}
+\subfile{1_Nonplanar_gcode/nonplanar_gcode}
+
+\section{3D printer modifications}
+\subfile{2_3d_printer_modification/3d_printer_modification}
+
+\section{Non-planar printing}
+\subfile{3_Nonplanar_printing/nonplanar_printing}
+
+\end{document}

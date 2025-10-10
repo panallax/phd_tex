@@ -1,0 +1,80 @@
+\documentclass[../../../main.tex]{subfiles}
+\begin{document}    
+
+The main motivation for this research is to create porous organic scaffolds that can be printed without support under any conditions by extrusion.
+This is where the first question that this research pretends to answer is born: 
+
+\begin{center}
+   \textit{\textbf{RQ1: How can we create better porous structures, manufacturable by 3D Printing extrusion, for tissue engineering, \\ in a physics-driven way?}}
+\end{center}
+
+Furthermore, taking advantage of the lightness of porous structures and other aspects such as heat dissipation or vibration absorption, the question arises as to whether they could have any application beyond tissue engineering. 
+Given that lightness is a fundamental aspect to consider in space missions, this structure could help solve some existing problems or replace parts currently used in space. 
+Therefore, in addition to the question raised above, a new question arises:
+
+\begin{center}
+   \textit{\textbf{RQ2: Is it possible to generate bio-inspired \\structures that can be used in a real space scenario?}}
+\end{center}
+
+The proposal to use organic structures to generate bone scaffolds, replacing the current ones, is based on the biological benefits of these structures. 
+However, the hypothesis that regular structures perform worse than stochastic ones in terms of crack propagation is also considered.
+Unlike homogeneous bodies, crack propagation in porous structures is governed by local microstructural characteristics, due to their open or dispersed microstructures, which modify the distribution of internal forces. 
+In regular porous structures, due to their regular microstructure, the crack propagates through a plane parallel to the direction of the maximum normal tensile stress, normally 45$^\circ$ under compression, similar to a homogeneous body.
+On the other hand, due to the lack of regularity in stochastic structures, crack propagation tends to be random.
+
+Furthermore, conventional 3D printing methods are based on the solidification of molten material on top of already solidified layers. 
+Since each layer of molten material is deposited on top of solidified material, the layers of material do not end up bonding homogeneously, but rather the manufactured body ends up being composed of many sheets bonded together. 
+This, combined with the rough surface obtained, facilitates the generation of cracks, which makes additively manufactured parts even more fragile, as these aspects allow the crack to propagate easily through the interface between the layers, separating them.
+To solve this problem, this project proposes breaking with the manufacturing methodology used by additive manufacturing and not using a layer-by-layer methodology to manufacture the scaffolds. 
+Taking advantage of the ease with which the numerical control codes used by 3D printers can be generated, the aim is to use a novel 3D printing methodology and, instead of 3D printing layer by layer, to print in a non-flat manner. 
+Avoiding the presence of stacked slices would generate smoother surfaces and micro-structurally homogeneous parts, reducing the fragility added to conventionally 3D-printed parts. 
+Thus, in addition to the objective of generating stochastic structures, the objective of manufacturing them in a non-flat manner is added.
+
+For this to be possible, certain considerations must be taken into account that completely change the characterisation of the desired porous structure and the manufacturing process.
+Firstly, this approach can only be used in extrusion-based 3D printing methods. 
+Secondly, one of the major limitations of non-flat printing is that not all shapes can be printed; strut-based structures are the only ones that can be printed in this way. 
+Given that the printing method initially proposed in this research is extrusion, and that strut-based structures are a type of open-cell porous structure, these limitations do not affect the feasibility of the main objective.
+However, it does imply the need for almost complete control over the structure generation process, as it adds restrictions to the design process.
+In non-planar printing, there is a design constraint that does not exist in conventional printing. 
+Since the extruder can move in any direction, it must be taken into account that it could cross the already printed material and tear it off. 
+Therefore, during the design process, the constraint must be added that all struts must maintain a minimum distance between each other to facilitate printing. 
+This minimum distance must be equal to the size of the extruder radius.
+This means that any design method that does not allow control of the position of the edges must be ruled out. 
+Far from being undesirable, this is advantageous, as it forces the use of parametric design methodologies that allow control of other characteristics of the final structure, such as pore size or geometric parameters.
+
+As the ultimate goal of these structures is to be used as bone scaffolds, coexistence with living cells means that no support material should be used. 
+To avoid using external support structures, the design must take into account the self-sustainability of the structure, so that no support structures are needed. 
+This could be done by controlling the angle of the struts with respect to the direction of construction.
+In conventional 3D printing, angles greater than 45$^\circ$ should be printable without support, as at least half of the current printed layer is in contact with the lower one, ensuring adequate adhesion and, therefore, stability.
+However, by controlling certain printing parameters, the maximum allowable overhang angle may be less than 45$^\circ$. 
+To the authors' knowledge, how this affects non-flat printing has not yet been studied.
+Therefore, another objective of this research is the study and use of self-supporting structures printed using non-flat printing.
+For all these reasons, the final research question that this project aims to answer arises:
+
+\begin{center}
+\textit{\textbf{RQ3: Is it possible to 3D-print self-supported structures in a non-planar way?}}
+\end{center}
+
+\subsection{Outline}
+
+To facilitate understanding of the work carried out and with the intention of guiding the reader through the entire process followed during the development of this research, this manuscript has been divided into different chapters that follow the order of all the stages followed by the author during the development of this thesis.
+
+The first chapter includes the motivation that led to the initiation of this research and the questions that were raised at the end of this work. The following chapters are as follows:
+
+\begin{itemize}
+
+    \item \textbf{Chapter 2 - State of the art:} The advances made by the scientific and industrial community in the development of stochastic porous structures are presented. The innovation of the proposal is justified.
+
+    \item \textbf{Chapter 3 - Methodology I:} The initial strategies followed to develop the algorithm that would generate self-sustaining stochastic structures are presented. The purpose of this chapter is to justify the final strategy used and show why other proposals do not work. Knowing the failures is sometimes more important than knowing the successes.
+
+    \item \textbf{Chapter 4 - Methodology II:} The final algorithm used to generate stochastic structures and its improvements to expand the geometries supported by the algorithm are explained.
+
+    \item \textbf{Chapter 5 - Case Study I:} Non-planar printing: This chapter shows the entire study of compression and characterisation of non-planar printing that made it possible to print in this way with a conventional 3D printer.
+
+    \item \textbf{Chapter 6 - Case Study II:} Satellite thruster support: This chapter shows all the work carried out for the second case study of the structures developed. It shows all the difficulties encountered and the final result obtained.
+
+    \item \textbf{Chapter 7 - Discussion and conclusion:} This chapter studies the capacity of the developed algorithm and reports on the work carried out and the degree of fulfilment of the questions posed at the beginning of the research. It also includes a conclusion of all the work carried out and proposes future lines of research within the framework of this research.
+
+\end{itemize}
+
+\end{document}

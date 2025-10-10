@@ -1,0 +1,61 @@
+\documentclass[a4paper,10pt,twoside,openright]{book}
+\input{preamble}
+
+\begin{document}
+\tableofcontents
+\newpage
+
+\listoffigures
+\newpage
+
+\listoftables
+\newpage
+
+
+\mainmatter
+
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[CO]{\leftmark}
+\fancyhead[CE]{\rightmark}
+\fancyfoot[LE,RO]{\thepage}
+
+Main body
+
+\chapter{Motivation and Objectives}
+\subfile{sections/1_Motivation_and_objectives/motivation_and_objectives}
+\newpage
+
+\chapter{Literature Review}
+\subfile{sections/2_Literature_review/literature_review}
+\newpage
+
+\chapter{Methodology: Part I}
+\subfile{sections/3_Methodology_1/methodology_1}
+\newpage
+
+\chapter{Methodology: Part II}
+\subfile{sections/4_Methodology_2/methodology_2}
+\newpage
+
+\chapter{Case Studio: Non-planar 3D-printing}
+\subfile{sections/5_Case_studio_1/case_studio_1}
+\newpage
+
+\chapter{Case Studio: Thruster bracket}
+\subfile{sections/6_Case_studio_2/case_studio_2}
+\newpage
+
+\chapter{Discussion and conclusions}
+\subfile{sections/7_Discussion _and_conclusion/discussion_and_conclusion}
+\newpage
+
+\printbibliography
+
+\clearpage
+\thispagestyle{empty}
+\hfill
+\clearpage
+
+\end{document}

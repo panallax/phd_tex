@@ -1,0 +1,64 @@
+\documentclass[../../../main.tex]{subfiles}
+\begin{document}    
+
+One of the characteristics of porous structures is that their internal geometry defines their mechanical properties. 
+By modifying their geometry, their properties can be altered to meet mechanical requirements \cite{app14146048}. 
+Therefore, depending on their application, some geometries will be more interesting than others \cite{Das2017}. 
+Although there are many types of designs proposed in the literature, they can all be classified as regular or irregular depending on whether their internal structure has a repeating pattern or not \cite{ma17184490}. 
+ 
+The former are very attractive because they are easy to design and manufacture. 
+These are the most widely used in the literature to generate porous structures, regardless of the field of application \cite{polym16142027}.
+Because their design depends only on a unit cell, it can be optimised for the application of interest, and the design obtained can be repeated until the desired volume is filled \cite{MASKERY201862}. 
+Designs belonging to this group can be classified into two subgroups: geometric and analytical \cite{polym16142027}. 
+Geometric designs are based on unit cells constructed from bars that form more complex geometries that make up the unit cell. 
+Analytical designs, on the other hand, are obtained from mathematical functions.
+These functions typically belong to the family of triply periodic minimal surfaces (TPMS) \cite{Feng_2022}. 
+Their appeal lies in their ease of design, well-defined analytical function, anisotropic characteristics, high specific surface area, excellent additive manufacturing properties, high hardness-to-weight ratio, and connected pores \cite{Feng_2022}.
+
+Random structures are not the most common, as they are more difficult to design and manufacture. 
+However, with the development of 3D printing, a better understanding of this type of structure and an increase in the tools available to design them are driving a surge in interest in this type of structure \cite{CHAO20231719}. 
+These types of structures cannot be classified by their shape, as they are random, and the methodologies used to generate them are not very diverse. 
+For example, Simoneau et al. \cite{SIMONEAU201626} propose a multiscale approach that consists of dividing the structure into small cubes and removing a specific number of them at random. 
+Wang et al. \cite{WANG2023103455} created random structures deforming a lattice unit cell that they propose. 
+Other articles generate non-regular porous structures by dividing a volume into, generally, Voronoi subspaces that they fill with different types of TPMS \cite{NOVAK2023104527, KANWAR2022111199, YANG201735, YANG2015444, Yang2015-2}. 
+
+Voronoi diagrams are a resource used by many studios to generate stochastic structures \cite{CHAO20231719}.
+The general procedure used is to fill a design space with random points (called seeds), generate Voronoi volumes from these seeds and generate a structure from the intersection of the different Voronoi volumes \cite{polym16142027}. 
+The difference between each study lies mainly in the way these seeds are generated.
+Piros et al. \cite{Das2017} imported the 3D model into a larger space, in which seed points are randomly placed and Voronoi cells are generated.
+From these, they calculate the intersection between the initial geometry and the Voronoi cells and thus obtain the filling of the initial structure,\textbf{ as shown in Figure 3.}
+Other authors generate seed points randomly according to the desired final pore size \cite{Liu2021, coatings12101373, Zhang2019, Abdullahi2019}.
+Alsheghri et al. \cite{VLAD2020110658}, Vlad et al. \cite{ALSHEGHRI2021112010}, and Gómez et al. \cite{GOMEZ2016341} base the location of the seed points on information extracted from bone by micro-computed tomography (µCT). 
+
+Other authors use µCT to generate porous structures from other structures. 
+The methodology used is the same in all articles and consists of scanning a porous structure by µCT to obtain its 3D CAD model.
+What differentiates each approach is the type of structure that is scanned \cite{polym16142027}.
+Baino et al. \cite{ceramics5030044} use the tomographic reconstruction of a polyurethane sponge. 
+Baino et al. \cite{jace17843} obtained 3D porous scaffolds resembling the architecture of cancellous bone.
+Berger et al. \cite{jbmb34474} scanned a human femoral head retrieved from a hip replacement.
+Matheson et al. \cite{MATHESON2017181} used an aluminium open-cell foam produced by investment casting. 
+Homberg et al. \cite{Homberg_2017} adapted realistic trabecular structures. 
+
+Thanks to the development of computer-aided design (CAD) programmes, some of which provide tools for generating random structures. 
+Gu et al. \cite{GU2022110443} used the software 3-Matic (Materialise, Leuven, Belgium) to topologically optimise a cylinder and obtain a porous structure. 
+Other authors propose self-developed topological optimisation algorithms based on principal stresses to obtain stiffness-optimised porous structures \cite{7829422, ZHAO2019107550, 30729593073638, ma14195726}.
+One technique used by several authors is to randomly fill a volume with points and join them together using different criteria to generate random lattice structures, such as the maximum number of connections per node, the minimum length of the connections or the minimum angle of the connections \cite{fbioe20231054391, KECHAGIAS2022102730, HOSSAIN2021101849, GHOUSE2017498}. 
+However, there are other proposals based on the generation of random points within a volume that do not generate reticular structures.
+\cite{CHEN2024106553, bioengineering10050567, MAPPA2024112692} also filled the volume with random points and used them as seeds to create spheres with the desired volume, then removed them from the volume, creating a porous structure.
+Sharif Ullah et al. \cite{Sharif_Ullah02012018} created an annular porous structure from radial sections of a cylinder, in which they distributed points using Monte Carlo methods and then applied convex hull operations to create a 3D structure. 
+Zhang et al. \cite{Zhang2019} generate reticular structures, but add a step to homogenise the structure obtained after joining the points.
+By calculating the Coulomb repulsion and Hooke attraction forces for each node, they aim to find the equilibrium positions and thus optimise the structure.
+
+Although advanced computational methods have emerged, such as stochastic topological optimisation, evolutionary algorithms, and machine learning-assisted generative design, which seek to balance biological realism and desired mechanical properties \cite{7829422, SIEGKAS2022110858, ZHANG20253684}. 
+However, despite the diversity of techniques, common limitations persist: the difficulty of simultaneously controlling biomimicry and manufacturability, the appearance of intersections or non-printable geometries, and the lack of explicit criteria to ensure that the generated designs are self-sustaining \cite{YAMADA2025113657}.
+In this regard, the field demands approaches capable of combining the morphological richness of stochastic methods with geometric constraints that ensure their manufacturability.
+
+In the field of bioprinting, regular structures predominate, as these studies focus more on the development of bio-inks that facilitate cell proliferation and biocompatible materials for the design of bone scaffolds \cite{KANWAR2021e00167}. 
+Therefore, they prioritise ease of design and manufacture. 
+They mainly use regular structures that can be generated with any layering programme. 
+On the stochastic side, the predominance of structures generated using Voronoi diagrams is notable \cite{KANWAR2021e00167}.
+This is probably because there are solutions in commercial CAD software to generate them easily.
+
+Although random structures are gaining interest in the field of bioprinting, most efforts are focused on studying materials with which to 3D print rather than on studying structures that allow the materials to be implanted.
+
+\end{document}
