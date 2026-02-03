@@ -3,6 +3,8 @@
 One of the simplest ways to generate stochastic reticular structures is to generate random points within the volume of interest and connect them according to the desired conditions.
 This proposal is divided into two different problems to be solved: generating random points within a volume and connecting pairs of points in a controlled manner. 
 This section aims to show the challenges that arose and how both problems were solved.
+In this context, volume is understood as the geometry used to generate the structure inside. 
+It must be one of the input parameters used to begin development in the form of an STL file.
 
 \subsection{Point-in-volume problem}
 The geometric problem of determining whether a point is inside a volume (also called ‘point-in-volume test’) is a classic problem in computational geometry and has several formulations depending on the representation of the volume. 
@@ -52,45 +54,44 @@ $, which returns the index of the simplex in which each point is located or $-1$
 \subsection{Random points generation inside a volume}
 
 Once the method for testing whether a point is inside a volume is established, the next step is to generate points within the volume.
-The easiest way to achieve this is by generating random points uniformly inside the bounding box of the volume and then removing the points that are not inside the volume, as explained above.
+The easiest way to achieve this is by generating random points inside the bounding box of the volume and then removing the points that are not inside the volume, as explained above.
 But this is when one realises that letting randomness dominate the problem only leads to unrealistic and suboptimal solutions.
 Randomness implies unpredictability and, therefore, that any result is correct. 
-Obviously, this makes no sense in the macroscopic world in which we live. 
+Clearly, this is illogical in the macroscopic world in which we live.
 One possible outcome of the process of generating \textit{n} points randomly within the volume is that the \textit{n} points would have the same coordinates. 
 Or that all the points would be clustered in the corners of the volume. 
 This is not logical and, therefore, not every result is valid.
 
 To solve this problem, the Fast Poisson-disk Sampling algorithm \cite{Bridson} is used to generate points randomly within the volume. 
-This algorithm ensures that the points are uniformly and evenly distributed, ensuring that two points are not located at a minimum imposed distance. 
+This algorithm ensures that the points are uniformly and evenly distributed, ensuring that two points are not located at a minimum desired distance. 
 Therefore, it avoids point clusters and minimises gaps while ensuring local randomness. 
 However, it limits the number of points generated depending on the minimum radius set.
-In the \textcolor{blue}{Figure} \ref{fig:poisson}, a comparison between the uniform and Poisson-disk sampling is shown.
+In the \cref{fig:poisson}, a comparison between the uniform and Poisson-disk sampling is shown.
 
 \begin{figure}[!htbp]
     \centering
-    \\includegraphics[width =\textwidth]{imgs/poisson.svg.pdf}
-    \caption{Comparison between uniform and Poisson-disk samplings of 500 points in a 1 \textit{mm} side square. A minimum distance of 0.05 \textit{mm} was used for the Poisson-disk sampling.}
+    \includegraphics[width =\textwidth]{imgs/poisson.pdf}
+    \caption{Comparison between uniform (left) and Poisson-disk (right) samplings of 500 points in a 1 \textit{mm} side square. A minimum distance of 0.05 \textit{mm} was used for the Poisson-disk sampling.}
     \label{fig:poisson}
 \end{figure}
 
 The difference between the two distributions is quite evident. 
-While the uniform distribution has clusters of points and empty areas, the Poisson-disk distribution achieves a more evenly distributed result. 
+While the uniform distribution has clusters of points and bigger empty areas, the Poisson-disk distribution achieves a more evenly distributed result. 
 In addition, a circle has been added to each of the points in the latter distribution, with a radius equal to the minimum radius set in the example, to show how well this algorithm works.
 The only problem is that control over the final number of points is lost. 
 In the example, 500 points were used, distributed in a square with a side length of 1 mm and a minimum radius of 0.05 \textit{mm}. 
 The result of this is that the Poisson-disk distribution generated 247 points, while the uniform distribution generated the initial 500.
-Despite this, the result obtained is much more realistic and logical.
 
 To generate the points within the volume, the \textit{PoissonDisk} function within the Quasi-Montecarlo submodule of the \textit{Scipy} library was used. 
 This function implements the Fast Poisson-disk Sampling algorithm with various additional optimisations. 
 However, it only generates the sample within a 1 \textit{mm} side cube in 3D. 
 Therefore, in order to fill any volume, the bounding boxes are voxelised with 1 \textit{mm} side voxels.
 And in each of these voxels, the points are generated randomly. 
-An example of the result of applying this logic to a 30x20 \textit{mm} cylindrical volume can be seen in \textcolor{blue}{Figure} \ref{fig:random_points}.
+An example of the result of applying this logic to a 30x20 \textit{mm} cylindrical volume can be seen in \cref{fig:random_points}.
 
 \begin{figure}[!htbp]
     \centering
-    \\includegraphics[width =0.5\textwidth]{imgs/random_points.svg.pdf}
+    \includegraphics[width =0.5\textwidth]{imgs/random_points.pdf}
     \caption{Random points generated using a Poisson-disk distribution inside a 30x20 \textit{mm} cylinder. In orange, the perimeters of the top and bottom bases are plotted to represent the boundaries of the cylinder.}
     \label{fig:random_points}
 \end{figure}
@@ -100,13 +101,17 @@ An example of the result of applying this logic to a 30x20 \textit{mm} cylindric
 Once the task of generating random points inside a volume is completed, the only remaining task is to join those points together.
 For two points to be joined, the connection must have an angle of at least 45$^{\circ}$ with respect to the horizontal.
 This angle is calculated using the scalar product of the vector connecting both points, and the direction vector of the \textit{z}-axis as follows:
-\[
-\theta = \arccos\left( \frac{\vec{a} \cdot \vec{b}}{ \| \vec{a} \| \, \| \vec{b} \| } \right)
-\]
-Initially, every pair of points forming an angle exceeding 45$^{\circ}$ was connected. Yet, this approach led to too many connections with excessive lengths. Consequently, it was decided that the unions' behaviour also needs to be regulated.
+
+\begin{equation}
+\theta = \arccos\left( \frac{\vec{a} \cdot \vec{b}}{ \| \vec{a} \| \; \| \vec{b} \| } \right)
+\end{equation}
+Initially, every pair of points forming an angle exceeding 45$^{\circ}$ was connected. Yet, this approach led to too many connections with excessive lengths. 
+Consequently, it was decided that it was also necessary to regulate the behaviour of unions.
 
 The first change implemented to control the connections of each node was to restrict the number of possible candidate nodes.
 To do this, the 30 closest neighbours were sought for each node, and only those above the analysed node were selected. 
+This value was obtained from a previous quantitative analysis to obtain a value that would ensure at least eight neighbours were reached. 
+However, this value will depend on the number of points present in the volume.
 It was decided to examine only higher nodes to avoid duplicate connections and to ensure that only nodes above or below the analysed node were joined. 
 As the points are ordered according to their \textit{z}-coordinate, the structure is built from the bottom up, thus ensuring connectivity. 
 The higher nodes were then filtered according to their angles, removing those that did not meet the angularity condition from the list of candidates. 
@@ -116,22 +121,22 @@ Therefore, with the intention of homogenising the connections of each node, it w
 This made it necessary to sort the candidates according to their angle and distance from the point. 
 It was decided to prioritise the closest candidates and those with an angle closest to 45$^{\circ}$.
 To do this, they are assigned a score according to the following expression:
-\[
+\begin{equation}
 node\:score = \frac{\frac{\alpha - \frac{\pi}{4}}{2\pi} + \frac{d_n}{d_{max}}}{n_{max} - n}
-\]
+\end{equation}
 Where $\alpha$ is the angle formed with the point, $d_n$ is the distance to the node, $d_{max}$ is the maximum distance separating a point and a neighbour among the entire set of points and neighbours, $n_{max}$ is the maximum number of connections allowed, and $n$ is the current number of connections on that candidate.
 The divisor $n_{max} - n$ was included to prioritise the less connected candidates.
 While the dividend was included to normalise the angle and the distance of each candidate.
 
 This method caused many problems that could not be solved. 
-\textcolor{blue}{Figure} \ref{fig:first_test_1} shows an example of a point cloud that has been joined using this method. 
+\cref{fig:first_test_1} shows an example of a point cloud that has been joined using this method. 
 This point cloud actually consists of 100 points that have been randomly generated within a 30x20 \textit{mm} cylinder. 
 However, in order not to saturate the image, all points on the surface of the volume were removed. 
 As can be seen, the image shows several details of the problems associated with this method. 
 Each of these will be explained below:
 \begin{figure}[!htbp]
     \centering
-    \\includegraphics[width =1.1\textwidth]{imgs/first_test_1.svg.pdf}
+    \includegraphics[width =1.1\textwidth]{imgs/first_test_1.pdf}
     \caption{Example of graph-like structure obtained from linking each node with its closest neighbours that meet the geometrical criteria. Also, four details of different issues related to this methodology are shown. This structure has been manipulated so that isolated points appear and the issues can be analysed clearly.}
     \label{fig:first_test_1}
 \end{figure}
@@ -167,8 +172,9 @@ This happens because when searching for nearby neighbours, distance is not taken
 Due to the unpredictability with which nodes are generated, this can lead to a node having its \textit{n} neighbours very far away, causing the connection with them to intersect with other connections. 
 Obviously, this is something that should also be avoided. 
 Physically, it does not make sense for two segments to be intersecting, and in addition, for the segments to be printable in a non-planar way, they must be at a minimum distance from the extruder radius. 
-Therefore, crossing edges make structures unprintable in a non-planar way.
+Therefore, crossing edges makes structures unprintable in a non-planar way.
 
-A significant amount of effort was put into fixing these errors, but due to the randomness present in the point generation process, it was not possible to guarantee that this method would always work. Therefore, it was decided to discard it.
+A significant amount of effort was put into fixing these errors, but due to the randomness present in the point generation process, it was not possible to guarantee that this method would always work.  
+Therefore, it was decided to discard it in favour of finding a method to control randomness to ensure the presence of potential connections.
 
 \end{document}

@@ -23,7 +23,7 @@ In this way, the points are generated randomly but are modified to be valid, so 
 \subsection{Random points generation on a spherical cap}\label{sec:random_gen}
 
 It was noted that the position in which the nodes are generated is crucial to ensure the continuity of the system. 
-Many points fall in locations that are not valid. Therefore, this methodology proposes to be able to modify these nodes to positions that are valid and can generate connections. 
+Many points fall in locations where they form less than 45$^\circ$ with the evaluated node and are therefore invalid. Therefore, this methodology proposes to be able to modify these nodes to positions that are valid and can generate connections. 
 If there are no points to modify, they can be generated during execution.
 Those points generated during the execution would lie within an area that has been called the solution space. 
 As done in the previous section, the connections of each node will be generated only upwards to avoid redundancies. 
@@ -134,12 +134,12 @@ Two figures are shown below illustrating the difference between two distribution
     \centering
     \begin{subfigure}[b]{0.25\textwidth}
         \centering
-        \\includegraphics[width=\textwidth]{imgs/no_sup.svg.pdf}
+        \includegraphics[width=\textwidth]{imgs/no_sup.pdf}
         \caption{Top view.}
     \end{subfigure}
     \begin{subfigure}[b]{0.26\textwidth}
         \centering
-        \\includegraphics[width=\textwidth]{imgs/no_front.svg.pdf}
+        \includegraphics[width=\textwidth]{imgs/no_front.pdf}
         \caption{Side view.}
     \end{subfigure}
     \caption{Example of an incorrect distribution of points in a sphere. } 
@@ -150,12 +150,12 @@ Two figures are shown below illustrating the difference between two distribution
     \centering
     \begin{subfigure}[b]{0.28\textwidth}
         \centering
-        \\includegraphics[width=\textwidth]{imgs/si_sup.svg.pdf}
+        \includegraphics[width=\textwidth]{imgs/si_sup.pdf}
         \caption{Top view.}
     \end{subfigure}
     \begin{subfigure}[b]{0.25\textwidth}
         \centering
-        \\includegraphics[width=\textwidth]{imgs/si_front.svg.pdf}
+        \includegraphics[width=\textwidth]{imgs/si_front.pdf}
         \caption{Side view.}
     \end{subfigure}
     \caption{Example of a correct distribution of points in a sphere.} 
@@ -169,14 +169,14 @@ The points belonging to each quadrant are colourised accordingly\footnote{$\math
 
 \begin{figure}
     \centering
-    \\includegraphics[width=0.3\textwidth]{imgs/dist_cap.svg.pdf}
+    \includegraphics[width=0.3\textwidth]{imgs/dist_cap.pdf}
     \caption{Example of uniform distribution of points among each quadrant.}
     \label{fig:dist_quad}
 \end{figure}
 
 \subsection{Pseudo-random connections}\label{sec:pseudorand}
 
-Once it has been explained how new random points will be generated when needed.
+After the method for generating new random points as required has been clarified.
 The flow of operations of this methodology will be introduced. 
 The initial state is composed of the points on the surface of the volume and \textit{n} randomly generated points within the volume, as shown in \cref{fig:rand_pts}.
 Points that belong to the surface of the volume will be called <<fixed points>>, since they will be considered as immovable.
@@ -185,7 +185,7 @@ This is done to preserve the topology of the volume.
 
 \begin{figure}
     \centering
-    \\includegraphics[width=0.7\textwidth]{imgs/random_pts.svg.pdf}
+    \includegraphics[width=0.7\textwidth]{imgs/random_pts.pdf}
     \caption{Example of initial state. Orange points represent the points of the volume's surface, while blue points are those generated randomly.}
     \label{fig:rand_pts}
 \end{figure}
@@ -198,7 +198,7 @@ This list will help to keep track of the quadrants in which each point has a con
 Then, the fixed points found are checked to see if any of them meet the angularity condition and can be connected to the evaluated node. If so, it is determined in which quadrant the fixed point is located, the connection is created, and the quadrant is removed from the list of available quadrants.
 
 Once the fixed points have been checked, if any higher points are not fixed and there are still quadrants available, the non-fixed points are analysed, and the following situations may occur:
-
+%
 \subsubsection{The angle it forms with the node is greater than or equal to $45^{\circ}$ and the point is in an available quadrant}
 
 This is the most straightforward situation, as all the necessary conditions are met for the connection to be created. 
@@ -207,7 +207,7 @@ So the connection is created, and the corresponding quadrant is removed from the
 \begin{figure}[!htbp]
     \centering
     \input{imgs/situation_1.tex}
-    \caption{Illustration of a situation where the angle the candidate point forms with the node is greater than or equal to $45^{\circ}$ and the point is in an available quadrant.}
+    \caption{Illustration of a situation where the angle of the candidate point forms with the node is greater than or equal to $45^{\circ}$ and the point is in an available quadrant.}
     \label{fig:sit_1}
 \end{figure}
 
@@ -218,13 +218,13 @@ This situation occurs if two or more points are in a quadrant and one of them al
 \begin{figure}[!htbp]
     \centering
     \input{imgs/situation_2.tex}
-    \caption{Illustration of a situation where the angle the candidate point forms with the node is greater than or equal to $45^{\circ}$ and the point is in an occupied quadrant.}
+    \caption{Illustration of a situation where the angle that the candidate point forms with the node is greater than or equal to $45^{\circ}$ and the point is in an occupied quadrant.}
     \label{fig:sit_2}
 \end{figure}
 
 \subsubsection{The angle it forms with the node is lower than  $45^{\circ}$}
 
-In this situation, it doesn't matter which quadrant the point is in because its position is incorrect anyway. So, in these situations, the point is moved to one of the available quadrants in a random position, as in the previous case (\cref{fig:sit_3}).
+In this situation, it does not matter which quadrant the point is in because its position is incorrect anyway. So, in these situations, the point is moved to one of the available quadrants in a random position, as in the previous case (\cref{fig:sit_3}).
 
 \begin{figure}[!htbp]
     \centering
@@ -244,7 +244,7 @@ This is not a problem because other points will be connected to those points, an
 This whole process is repeated until the top is reached, meaning that the volume is filled.
 
 In the \cref{fig:color_nodes_1} and \cref{fig:color_nodes_2}, two final structures obtained from the initial points in \cref{fig:rand_pts} are shown.
-\cref{fig:color_nodes_1} was obtained using a radius r = 0.5 $mm$ and \cref{fig:color_nodes_2} using a radius r=1 $mm$.  
+\cref{fig:color_nodes_1} was obtained using a radius \textit{r = 0.5} $mm$ and \cref{fig:color_nodes_2} using a radius \textit{r = 1} $mm$.  
 Both figures show the connectivity of the coloured nodes according to the number of connections they have. 
 The red points are nodes that have only one connection and should therefore be eliminated. 
 It can be seen that these points are located at the top base of the volume, and these points cannot have higher connections.
@@ -254,21 +254,28 @@ But the larger the search radius, the greater the probability that a node connec
 
 \begin{figure}
     \centering
-    \\includegraphics[width=0.7\textwidth]{imgs/color_nodes_1.svg.pdf}
-    \caption{Example of initial state. Orange points represent the points of the volume's surface, while blue points are those generated randomly.}
+    \includegraphics[width=0.7\textwidth]{imgs/color_nodes_1.pdf}
+    \caption{Nodal connectivity of the structure obtained with a parameter \textit{r = 0.5 mm}.}
     \label{fig:color_nodes_1}
 \end{figure}
 
 \begin{figure}
     \centering
-    \\includegraphics[width=0.7\textwidth]{imgs/color_nodes_2.svg.pdf}
-    \caption{Example of initial state. Orange points represent the points of the volume's surface, while blue points are those generated randomly.}
+    \includegraphics[width=0.7\textwidth]{imgs/color_nodes_2.pdf}
+    \caption{Nodal connectivity of the structure obtained with a parameter \textit{r = 0.1 mm}.}
     \label{fig:color_nodes_2}
 \end{figure}
 
-The first structure is initialised with 527 fixed points and 773 non-fixed points. At the end, the structure has 2357 points, so 1057 new points have been generated. The number of connections is 8000.
-The second structure is initialised with 527 fixed points and 790 non-fixed points. At the end, the structure has 1336 points, so only 19 points have been generated. The number of connections is 4356.
-This decrease is also due to the search radius. The larger the search radius, the more points are retrieved, and therefore the higher the probability of creating a connection. Also, because the points that are generated are higher, fewer points are needed to reach the upper base of the volume. Nevertheless, the number of connections is very high and increasing the radius also increases the probability of crossing edges.
+As an example, the first structure is initialised with 527 fixed points and 773 non-fixed points. 
+At the end, the structure has 2357 points, so 1057 new points have been generated. 
+The number of connections is 8000.
+The second structure is initialised with 527 fixed points and 790 non-fixed points. 
+At the end, the structure has 1336 points, so only 19 points have been generated.
+The number of connections is 4356.
+This decrease is also due to the search radius. 
+The larger the search radius, the more points are retrieved, and therefore the higher the probability of creating a connection. 
+Also, because the points that are generated are higher, fewer points are needed to reach the upper base of the volume. 
+Nevertheless, the number of connections is very high and increasing the radius also increases the probability of crossing edges.
 While the middle connections tend to be longer.
 
 
@@ -278,8 +285,8 @@ Lengths of less than 0.4 \textit{mm} predominate, which mainly correspond to the
 
 \begin{figure}
     \centering
-    \\includegraphics[width=1\textwidth]{imgs/lengths_1.svg.pdf}
-    \caption{Example of initial state. Orange points represent the points of the volume's surface, while blue points are those generated randomly.}
+    \includegraphics[width=1\textwidth]{imgs/lengths_1.pdf}
+    \caption{Edge length distribution in a structure generated using a parameter \textit{r = 1 mm}. Each edge is coloured according to its length, following the colormap shown next to the length distribution.}
     \label{fig:lengths_1}
 \end{figure}
 
@@ -287,7 +294,7 @@ Although this method ensures that all nodes are mostly connected to the top four
 Some of the initial points (seeds) may be surrounded by a few points and are not located in any valid position for any lower point, causing no other point to connect to them.  
 To avoid this, once the main loop is finished, all points are looped back from top to bottom. 
 This time, connections will be sought below each of the points to generate connections in all four quadrants below each point. 
-In this process, no new points will be generated, only connections will be created with lower nodes that meet the angularity condition and are in available quadrants.
+In this process, no new points will be generated; only connections will be created with lower nodes that meet the angularity condition and are in available quadrants.
 
 \begin{figure}[!htbp]
     \centering
@@ -310,15 +317,16 @@ Although the double running of the structure improves the connectivity of the po
 It may be that the same situation that has caused a point to have no connection underneath on the outward run will happen again on the return run. 
 Or it may be that some inferior connection is found, but not the four necessary ones, since no new points are generated in the return processing. 
 And it is this generation of new points that ensures that the points have four connections above.
-\cref{fig:color_nodes_3} shows the connectivity of the nodes after the two run process.
+\cref{fig:color_nodes_3} shows the connectivity of the nodes after the two run processes.
 Nodes with fewer than eight connections are coloured in red. 
 That validates the premise that even with a second run, correct connectivity is not guaranteed by this method.
 While it is true that most of the nodes with fewer than eight connections are points that belong to the surface, there are other poorly connected nodes that are not.
+This can create areas of structural weakness due to the low connection of these nodes, so it is not desirable for this to occur.
 
 \begin{figure}
     \centering
-    \\includegraphics[width=0.7\textwidth]{imgs/color_nodes_3.svg.pdf}
-    \caption{Example of initial state. Orange points represent the points of the volume's surface, while blue points are those generated randomly.}
+    \includegraphics[width=0.7\textwidth]{imgs/color_nodes_3.pdf}
+    \caption{Nodal connectivity obtained in a structure generated with a parameter \textit{r = 1 mm} after two sweeps.}
     \label{fig:color_nodes_3}
 \end{figure}
 

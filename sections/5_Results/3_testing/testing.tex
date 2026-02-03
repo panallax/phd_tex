@@ -1,0 +1,88 @@
+\documentclass[../../../main.tex]{subfiles}
+\begin{document}
+
+
+Four designs were tested to characterise the developed structures mechanically and to compare them with the most commonly used designs in the literature: gyroid and Voronoi patterns\cite{alex}.  
+For this purpose, two reference structures were generated using the built-in routines of nTop: a regular structure based on a gyroidal pattern, and a stochastic structure derived from a Voronoi tessellation. 
+In addition, two structures were produced using the algorithm proposed in this work, each generated with the two mesh generation modules used in the developed package.
+An example of all designs is shown in \cref{fig:mech_test}. 
+Cylinders of 20x30 \textit{mm}, with a porosity of 82\%, were printed using SLA and all specimens were cured with standard UV light for 20 minutes with constant rotation.  
+The mechanical behaviour of this type of structure was characterised by compression testing using a Metrotec 300K universal testing machine. 
+The test conditions were carried out according to ISO 844, which applies to polymeric cells. 
+A load cell of 10 \textit{kN} and a constant displacement rate of 3 \textit{mm/min} were used. 
+
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[t]{0.2\textwidth}
+        \includegraphics[width = \textwidth]{imgs/Gyroid.pdf}
+        \caption{Gyroid.}
+     \end{subfigure}
+     \hspace{0.3cm}
+    \begin{subfigure}[t]{0.2\textwidth}
+        \includegraphics[width =\textwidth]{imgs/Voronoi.pdf}
+        \caption{Voronoi.}
+     \end{subfigure}
+     \hspace{0.3cm}
+     \begin{subfigure}[t]{0.2\textwidth}
+        \includegraphics[width =\textwidth]{imgs/random_cyl.pdf}
+        \caption{Random with cylinders.}
+     \end{subfigure}
+     \hspace{0.3cm}
+     \begin{subfigure}[t]{0.2\textwidth}
+        \includegraphics[width =\textwidth]{imgs/random.pdf}
+        \caption{Random with unique mesh.}
+     \end{subfigure}
+     \caption{Example of the different structures tested. a) Gyroid, b) Voronoi, c) Cylindrical random and d) Random with unique mesh.}
+    \label{fig:mech_test}
+\end{figure}
+
+Five of each of the different designs of porous structures were tested to a deformation of 20\%. 
+A safety criterion was used, which stopped the test when a drop in strength greater than the security margin was detected, indicating catastrophic failure of the specimen. 
+\cref{fig:plot} shows the average results of each of the tests for each case. 
+The curves that do not reach the 20\% deformation indicate that, in at least one of the tests, the specimen suffered a catastrophic failure, triggering the stop criterion. 
+Therefore, the average values represented are the smallest deformation achieved in each case. 
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width= 0.9\textwidth]{imgs/plot.pdf}
+    \caption{Stress-strain mean curves for all specimens.}
+    \label{fig:plot}
+\end{figure}
+
+\cref{tab:results} shows the results of the different mechanical properties obtained for each of the designs. 
+As these are porous structures, the elastic modulus was calculated using the slope between 0.5\% and 1\% deformation, according to ISO 844. 
+
+\begin{table}[!htbp]
+\centering
+\caption{Mechanical properties obtained from the quasi-static test for each design.}
+\label{tab:results}
+\renewcommand{\arraystretch}{1.3}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{ccccc}
+\hline
+\textbf{Mechanical properties}     & \textbf{Gyroid}         & \textbf{Voronoi} & \textbf{Random}         & \textbf{Random with mesh} \\ \hline
+\textbf{Elastic Modulus [MPa]}     & 17.23 $\pm$ 2.23          & 8.81 $\pm$ 3.4     & \textbf{20.27 $\pm$ 3.56} & 18.04 $\pm$ 0.79            \\
+\textbf{Max Stress [MPa]}          & \textbf{0.835 $\pm$ 0.11} & 0.695 $\pm$ 0.03   & 0.790 $\pm$ 0.03          & 0.601 $\pm$ 0.04            \\
+\textbf{Stress @ 5\% strain [MPa]}  & 0.698 $\pm$ 0.10          & 0.529 $\pm$ 0.01   & \textbf{0.706 $\pm$ 0.03} & 0.597 $\pm$ 0.05           \\
+\textbf{Stress @ 10\% strain [MPa]} & \textbf{0.713 $\pm$ 0.09} & 0.565 $\pm$ 0.05   & 0.312 $\pm$ 0.3           & 0.061 $\pm$ 0.02            \\
+\textbf{Absorbed Energy [J]}       & \textbf{0.105 $\pm$ 0.01} & 0.076 $\pm$ 0.003  & 0.026 $\pm$ 0.01          & 0.033 $\pm$ 0.001           \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+The highest elastic modulus obtained after the compression tests was obtained by the stochastic structures proposed in this work.
+Although the structure created by joining cylinders has shown better behaviour in compression than the one obtained using the George W. Hart algorithm. 
+This algorithm tends to reinforce the nodes but, at the same time, makes the edges thinner, facilitating buckling. 
+The tested structures had very long edges and high porosity. 
+Thus, the proposed structures have collapsed catastrophically due to a propensity to buckle as mentioned above.
+It is therefore normal that the structure made from cylinders had a better compression behaviour. 
+Concerning the Gyroid and Voronoi, the proposed structures have a higher elastic modulus than both of them. 
+However, they have a worse behaviour at failure, as they suffered a very fragile failure, causing the safety system of the testing machine to trigger in some cases. 
+Despite this, it is remarkable that the fact of having obtained a higher modulus than the Gyroid, since it is the regular structure that presents excellent mechanical properties.
+It is also noteworthy to have obtained a higher mechanical resistance than the Voronoi structure, since it is the most common structure among the random ones. 
+The better behaviour after rupture of this structure compared to those proposed may be because this structure has shorter edges and, therefore, is less prone to buckling. 
+However, the random orientation of the edges may explain the lower mechanical strength. 
+In the proposed structures, the edges tend to have an inclination of the minimum angle established. 
+In the case of the test, it was 45$^\circ$, this being the direction of maximum stress. 
+
+\end{document}

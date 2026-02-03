@@ -1,14 +1,14 @@
 \documentclass[../../../main.tex]{subfiles}
 \begin{document}    
 
-The main motivation for this research is to create porous organic scaffolds that can be printed without support under any conditions by extrusion.
-This is where the first question that this research pretends to answer is born: 
+The primary aim of this study is to create porous organic scaffolds that can be printed without the need for support in any situation through extrusion, as well as to adjust to a specific load scenario.
+This is where the first question that this research aims to address arises:
 
 \begin{center}
-   \textit{\textbf{RQ1: How can we create better porous structures, manufacturable by 3D Printing extrusion, for tissue engineering, \\ in a physics-driven way?}}
+   \textit{\textbf{RQ1: How can we develop improved porous structures, suitable for 3D Printing through extrusion, for use in tissue engineering, \\ in a physics-driven way?}}
 \end{center}
 
-Furthermore, taking advantage of the lightness of porous structures and other aspects such as heat dissipation or vibration absorption, the question arises as to whether they could have any application beyond tissue engineering. 
+Furthermore, by leveraging the lightness of porous structures and other features such as heat dissipation or vibration absorption, the question arises as to whether they could have any applications beyond tissue engineering. 
 Given that lightness is a fundamental aspect to consider in space missions, this structure could help solve some existing problems or replace parts currently used in space. 
 Therefore, in addition to the question raised above, a new question arises:
 
@@ -16,11 +16,6 @@ Therefore, in addition to the question raised above, a new question arises:
    \textit{\textbf{RQ2: Is it possible to generate bio-inspired \\structures that can be used in a real space scenario?}}
 \end{center}
 
-The proposal to use organic structures to generate bone scaffolds, replacing the current ones, is based on the biological benefits of these structures. 
-However, the hypothesis that regular structures perform worse than stochastic ones in terms of crack propagation is also considered.
-Unlike homogeneous bodies, crack propagation in porous structures is governed by local microstructural characteristics, due to their open or dispersed microstructures, which modify the distribution of internal forces. 
-In regular porous structures, due to their regular microstructure, the crack propagates through a plane parallel to the direction of the maximum normal tensile stress, normally 45$^\circ$ under compression, similar to a homogeneous body.
-On the other hand, due to the lack of regularity in stochastic structures, crack propagation tends to be random.
 
 Furthermore, conventional 3D printing methods are based on the solidification of molten material on top of already solidified layers. 
 Since each layer of molten material is deposited on top of solidified material, the layers of material do not end up bonding homogeneously, but rather the manufactured body ends up being composed of many sheets bonded together. 
@@ -32,12 +27,14 @@ Thus, in addition to the objective of generating stochastic structures, the obje
 
 For this to be possible, certain considerations must be taken into account that completely change the characterisation of the desired porous structure and the manufacturing process.
 Firstly, this approach can only be used in extrusion-based 3D printing methods. 
-Secondly, one of the major limitations of non-flat printing is that not all shapes can be printed; strut-based structures are the only ones that can be printed in this way. 
+Secondly, one of the major limitations of non-flat printing is that not all shapes can be printed.
+Generally, only those composed of cylindrical elements can be printed. 
+This is due to the continuous and directional nature of the extruded material.
 Given that the printing method initially proposed in this research is extrusion, and that strut-based structures are a type of open-cell porous structure, these limitations do not affect the feasibility of the main objective.
 However, it does imply the need for almost complete control over the structure generation process, as it adds restrictions to the design process.
 In non-planar printing, there is a design constraint that does not exist in conventional printing. 
 Since the extruder can move in any direction, it must be taken into account that it could cross the already printed material and tear it off. 
-Therefore, during the design process, the constraint must be added that all struts must maintain a minimum distance between each other to facilitate printing. 
+Therefore, during the design process, a constraint must be added that all struts maintain a minimum distance from each other to facilitate printing. 
 This minimum distance must be equal to the size of the extruder radius.
 This means that any design method that does not allow control of the position of the edges must be ruled out. 
 Far from being undesirable, this is advantageous, as it forces the use of parametric design methodologies that allow control of other characteristics of the final structure, such as pore size or geometric parameters.
@@ -47,7 +44,7 @@ To avoid using external support structures, the design must take into account th
 This could be done by controlling the angle of the struts with respect to the direction of construction.
 In conventional 3D printing, angles greater than 45$^\circ$ should be printable without support, as at least half of the current printed layer is in contact with the lower one, ensuring adequate adhesion and, therefore, stability.
 However, by controlling certain printing parameters, the maximum allowable overhang angle may be less than 45$^\circ$. 
-To the authors' knowledge, how this affects non-flat printing has not yet been studied.
+To the author's knowledge, how this affects non-flat printing has not yet been studied.
 Therefore, another objective of this research is the study and use of self-supporting structures printed using non-flat printing.
 For all these reasons, the final research question that this project aims to answer arises:
 
@@ -57,23 +54,20 @@ For all these reasons, the final research question that this project aims to ans
 
 \subsection{Outline}
 
-To facilitate understanding of the work carried out and with the intention of guiding the reader through the entire process followed during the development of this research, this manuscript has been divided into different chapters that follow the order of all the stages followed by the author during the development of this thesis.
-
-The first chapter includes the motivation that led to the initiation of this research and the questions that were raised at the end of this work. The following chapters are as follows:
+To facilitate understanding of the work carried out and to guide the reader through the entire process undertaken during the development of this research, this manuscript is divided into chapters that reflect the order of the stages followed by the author during the development of this thesis.
 
 \begin{itemize}
+    \item \textbf{Chapter I - Background and Research Objectives:} The first chapter includes the motivation that led to the initiation of this research and the questions that were raised at the end of this work.
+    
+    \item \textbf{Chapter II - State of the art:} The advances made by the scientific and industrial community in the development of stochastic porous structures are presented, together with the limitations encountered, in order to justify the need for this work.
 
-    \item \textbf{Chapter 2 - State of the art:} The advances made by the scientific and industrial community in the development of stochastic porous structures are presented. The innovation of the proposal is justified.
+    \item \textbf{Chapter III - Methodology:} This chapter has been divided into two parts. The first part shows the initial solutions proposed based on suggestions made in the literature. The purpose of this section is to justify why the solutions proposed in the literature for generating self-sustaining stochastic lattice structures by connecting random points are not viable for producing such structures. In addition, this section also aims to show the different stages reached in the development of the methodology that inspired the methodology finally implemented. The second part shows the methodology finally implemented to generate the structures proposed in this work.
+    
+    \item \textbf{Chapter IV - Results:}  In this section an analysis of the capacity of the developed algorithm and its limitations is conducted in the form of a results analysis.
+    
+    \item \textbf{Chapter V - Case Studies:} This chapter covers the development of the two case studies that aim to answer research questions RQ2 and RQ3. The first section shows how non-planar printing was achieved through high-temperature extrusion. The second section shows the application of the algorithm developed to degenerate a structure that serves as a thruster bracket for a satellite. Both sections include the results obtained for each of the case studies.
 
-    \item \textbf{Chapter 3 - Methodology I:} The initial strategies followed to develop the algorithm that would generate self-sustaining stochastic structures are presented. The purpose of this chapter is to justify the final strategy used and show why other proposals do not work. Knowing the failures is sometimes more important than knowing the successes.
-
-    \item \textbf{Chapter 4 - Methodology II:} The final algorithm used to generate stochastic structures and its improvements to expand the geometries supported by the algorithm are explained.
-
-    \item \textbf{Chapter 5 - Case Study I:} Non-planar printing: This chapter shows the entire study of compression and characterisation of non-planar printing that made it possible to print in this way with a conventional 3D printer.
-
-    \item \textbf{Chapter 6 - Case Study II:} Satellite thruster support: This chapter shows all the work carried out for the second case study of the structures developed. It shows all the difficulties encountered and the final result obtained.
-
-    \item \textbf{Chapter 7 - Discussion and conclusion:} This chapter studies the capacity of the developed algorithm and reports on the work carried out and the degree of fulfilment of the questions posed at the beginning of the research. It also includes a conclusion of all the work carried out and proposes future lines of research within the framework of this research.
+    \item \textbf{Chapter VI - Discussion and conclusion:} This chapter consists of several sections. First, an assessment of the degree of satisfaction of the research questions posed is also provided. Then, a conclusion of all the work carried out is included, and future lines of research within the framework of this investigation are proposed. Finally, the most significant academic and technological contributions made during the course of this research are detailed in the last section.
 
 \end{itemize}
 

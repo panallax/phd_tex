@@ -4,8 +4,8 @@ As demonstrated in the previous section, due to the nature of triangulation, the
 Therefore, one option to solve this problem is to reduce the number of vertices once they are created to keep them constant in each layer. 
 This can be achieved by randomly removing some vertices or selecting them based on specific geometrical or topological criteria. 
 If the vertices are removed randomly, situations may arise where the remaining vertices are not distributed in a pseudo-uniform way and may generate clusters of vertices, thus leaving unwanted empty areas or leaving vertices that could be too close. 
-An example of this can be seen in the left image of \textcolor{blue}{Figure} \ref{fig:shell_points_2}. 
-On the other hand, if the vertexes are removed based on some criteria, those undesired vertices can be removed to get a more uniform distribution.
+An example of this can be seen in the left image of \cref{fig:shell_points_2}. 
+On the other hand, if the vertices are removed based on some criteria, those undesired vertices can be removed to get a more uniform distribution.
 
 Since the desired situation is one in which the vertices are as evenly distributed as possible, vertices that are too close to each other are not desired, as they prevent this uniformity. 
 Then, it is of interest to eliminate them. 
@@ -15,7 +15,7 @@ This avoids the possible situations where the distance between the projections o
 Once the pairs of points to remove have been located, to way to remove them is to merge them at the midpoint between them.
 This process does not literally remove the points, because if the points were removed, the connectivity of the structure would be lost.
 That is why the only way to reduce the number of points is to merge them.
-In the \textcolor{blue}{Figure} \ref{fig:merge_points}, an example of this process is illustrated.
+In the \cref{fig:merge_points}, an example of this process is illustrated.
 In order not to lose the connectivity between the vertex and the corresponding points of the base when merging the points, the points of the base and the vertex of each tetrahedron are stored in a dictionary with the following structure:
 \begin{lstlisting}[language = Python]
     tetrahedrons_dict = {
@@ -27,30 +27,30 @@ In order not to lose the connectivity between the vertex and the corresponding p
 \end{lstlisting} 
 Thus, when two points are merged, a routine looks up the base points corresponding to each of the points to be merged and modifies the \textit{apex} key with the new value.
 Thus, the triangular pyramids whose apexes are merged become rectangular pyramids.
-Although, it could be a situation where more than a pair of points are too close together.
-There may be some situations where one vertex is too close to two vertexes, or even more.
-In such cases, the set of vertexes that link all the vertices in the set are merged together at the midpoint of the set.
-In the \textcolor{blue}{Figure} \ref{fig:merge_segments} is shown an example of the output of this process.
+Although it could be a situation where more than a pair of points are too close together.
+There may be some situations where one vertex is too close to two vertices, or even more.
+In such cases, the set of vertices that link all the vertices in the set is merged at the midpoint of the set.
+In the \cref{fig:merge_segments}, an example of the output of this process.
 The initial triangulation is represented in a dotted blue line, and the green lines represent the final tessellation.
 Whereas the red lines represent the segments to eliminate and the black points represent the midpoints of each segment, therefore, the convergence point of the vertices. 
 Also, a detail of a set of segments to eliminate is shown, where it can be seen that the convergence point corresponds to the midpoint of the set of points. 
-It should be noted that the set of points represented corresponds only to the vertices created, and that the shell points have not been joined at this point in order to avoid movement of the shell points. 
+It should be noted that the set of points represented corresponds only to the vertices created, and that the shell points have not been joined at this point to avoid movement of the shell points. 
 These points must be fixed as they belong to the shell.
-Initially there were 126 vertexes, and after the process only 92 remain.
+Initially, there were 126 vertices, and after the process, only 92 remain.
 As can be seen in the figure, the result of this process is a triangulation where the small triangles have disappeared.
-There could be situations where the process of merging points generate new points that are still too close to other points.
-To avoid that, the process continues until there is no more short segments to remove.
+There could be situations where the process of merging points generates new points that are still too close to other points.
+To avoid that, the process continues until there are no more short segments to remove.
 
 \vskip 0.3cm
 \begin{figure}[!htbp]
 \centering
 \input{imgs/remove_segments.tex}
-\caption{Procedure to remove short segments. The dotted lines represent edges at the back, while the dashed lines represent the edges of the triangulation. The image A shows the initial state where two vertices from the two neighbouring simplices are generated too close. Image B shows the final state from the merging process, where this short segment is removed.}
+\caption{Procedure to remove short segments. The dotted lines represent edges at the back, while the dashed lines represent the edges of the triangulation. The image A shows the initial state where two vertices from the two neighbouring simplices are generated too close together. Image B shows the final state from the merging process, where this short segment is removed.}
 \label{fig:merge_points}
 \end{figure}
 
 \begin{figure}[H]
-    \\includegraphics[width=1\textwidth]{imgs/remove_segments.svg.pdf}
+    \includegraphics[width=1\textwidth]{imgs/remove_segments.pdf}
     \centering
     \caption{Example of the result of the process of removing short segments. The initial triangulation is represented in dotted blue lines, and the green lines represent the final tessellation.
     Whereas the red lines represent the segments to eliminate, and the black points represent the midpoints of each segment.
@@ -61,29 +61,29 @@ To avoid that, the process continues until there is no more short segments to re
 While it is true that this process removes the short segments and reduces the number of small triangles, it is also true that still existing a disparity in the size of the triangles that would be interesting to reduce.
 Different triangle areas would generate a wide range of tetrahedron heights.
 Generally, the smaller the triangle, the shorter the height of the tetrahedron.
-The \textcolor{blue}{Figure} \ref{fig:3d_apexes} shows a triangulation of a set of points whit small decreasing triangle area gradient from left to right.
+The \cref{fig:3d_apexes} shows a triangulation of a set of points with a small decreasing triangle area gradient from left to right.
 It also includes a representative surface generated from the apexes found from the triangulation.
 It can be seen that the slope of the surface is proportional to the gradient of the triangle area and, therefore, the different heights produced by the different triangle areas.
 
 \begin{figure}[h!]
-    \\includegraphics[width=0.8\textwidth]{imgs/3d_apexes.svg.pdf}
+    \includegraphics[width=0.8\textwidth]{imgs/3d_apexes.pdf}
     \centering
-    \caption{Representation of the triangulation of a set of points with a decreasing triangle area gradient from the left to the right. From those triangles and the apexes obtained from them, a surface is generated showing that the height of each tetrahedron is proportional to the area of the triangle.}
+    \caption{Representation of the triangulation of a set of points with a decreasing triangle area gradient from left to right. From those triangles and the apexes obtained from them, a surface is generated showing that the height of each tetrahedron is proportional to the area of the triangle.}
 \label{fig:3d_apexes}
 \end{figure}
 
 To mitigate this dispersion in the heights of the tetrahedra, a routine is implemented to increase the area of the smaller triangles, thus reducing the differences in the areas of the triangles.
 To do this, the routine looks for the triangles that have an area smaller than a threshold.
-The area of the triangles is computed as half of the norm of the cross product of the vectors that form the triangle (\textcolor{blue}{Equation} \ref{eq:area}).
+The area of the triangles is computed as half of the norm of the cross product of the vectors that form the triangle (\cref{eq:area}).
 When this area is smaller than a defined value, the vertex closer to the origin of the Cartesian coordinate system is selected.
 Then, all the points that are connected to this vertex are retrieved, and the vertex is moved to the centroid of this set of points.
-In the \textcolor{blue}{Figure} \ref{fig:small_area}, a detail of the output of this routine is shown.
+In the \cref{fig:small_area}, a detail of the output of this routine is shown.
 In the image, the initial triangulation is represented in dotted blue lines, and the green lines represent the final tessellation.
 Also, the red points represent the triangle with a small area, and the pointed vertex in cyan is the vertex that is moved to the centroid of the set of points, which is represented by the black point.
 It can be observed that the new triangles have a more uniform area.
-The result of this routine in the triangulation of the set of points is shown in the \textcolor{blue}{Figure} \ref{fig:euler} \textcolor{blue}{B} can be observed in the \textcolor{blue}{Figure} \ref{fig:small_area_2}.
-In the figure is shown the initial triangulation is shown in dotted magenta lines, and the final tessellation in green lines. 
-The red points represent the new positions of the vertices that have been moved to the centroid of the set of points while the points marked caret down represent the initial distribution of the vertices.
+The result of this routine in the triangulation of the set of points is shown in the \cref{fig:euler} \textcolor{blue}{B} can be observed in the \cref{fig:small_area_2}.
+In the figure, the initial triangulation is shown in dotted magenta lines, and the final tessellation in green lines. 
+The red points represent the new positions of the vertices that have been moved to the centroid of the set of points, while the points marked caret down represent the initial distribution of the vertices.
 It can be appreciated that now the triangulation is more uniform.
 
 \begin{equation}
@@ -93,34 +93,34 @@ It can be appreciated that now the triangulation is more uniform.
 
 
 \begin{figure}[htbp!]
-    \\includegraphics[width=0.4\textwidth]{imgs/small_area.svg.pdf}
+    \includegraphics[width=0.4\textwidth]{imgs/small_area.pdf}
     \centering
     \caption{Example of the result of the process of increasing the area of the small triangles. The initial triangulation is represented in dotted blue lines, and the green lines represent the final tessellation. The red points represent the triangle with a small area, and the pointed vertex in cyan is the vertex that is moved to the centroid of the set of points, which is represented by the black point.}
 \label{fig:small_area}
 \end{figure}
 
 \begin{figure}[!hbtp]
-    \\includegraphics[width=0.9\textwidth]{imgs/small_area_2.svg.pdf}
+    \includegraphics[width=0.9\textwidth]{imgs/small_area_2.pdf}
     \centering
-    \caption{Example of the result of the process of increasing the area of the small triangles. The initial triangulation is represented in dotted magenta lines, and the final tessellation in green lines. The red points represent the new positions of the vertices that have been moved to the centroid of the set of points, while the points marked caret down represent the initial distribution of the vertices.}
+    \caption{Comparison between the triangulation of a section before the area relaxation procedure and after application.}
 \label{fig:small_area_2}
 \end{figure}
 
 The process of removing short segments and increasing the area of the small triangles is not exclusive and can be combined to obtain a better performance.
-In the \textcolor{blue}{Figure} \ref{fig:optimized} is shown the input and output results of the process of removing short segments and increasing the area of the small triangles.
+In the \cref{fig:optimized} is shown the input and output results of the process of removing short segments and increasing the area of the small triangles.
 The initial triangulation in the example is made up of 153 vertices, while only 118 remain after the process.
-That is translated into a reduction from 277 simplices to 211 and a smoother and more uniform tessellation, although some small triangles still remain.
+That is translated into a reduction from 277 simplices to 211 and a smoother and more uniform tessellation, although some small triangles remain.
 
 
 \begin{figure}[!hbtp]
-    \\includegraphics[width=1\textwidth]{imgs/optimized.svg.pdf}
+    \includegraphics[width=1\textwidth]{imgs/optimized.pdf}
     \centering
     \caption{Final result of the process of removing short segments and increasing the area of the small triangles. The initial triangulation is represented in dotted magenta lines, and the final tessellation in green lines. The red points represent the new positions of the vertices that have been moved to the centroid of the set of points, while the points marked caret down represent the initial distribution of the vertices.}
 \label{fig:optimized}
 \end{figure}
 
 \newpage
-A brief analysis of the variation of the heights and areas from the triangles in the \textcolor{blue}{Figure} \ref{fig:optimized} is shown in the \textcolor{blue}{Figure} \ref{fig:distribution}.
+A brief analysis of the variation of the heights and areas from the triangles in the \cref{fig:optimized} is shown in the \cref{fig:distribution}.
 The blue bars represent the distribution of the heights of the tetrahedra in the initial triangulation, while the orange bars represent the distribution of the heights of the tetrahedra after the processing.
 Also, the mean values of each distribution are represented by the dashed lines, cyan for the initial distribution and red for the final distribution.
 A reduction in the tetrahedra of lower height and a greater concentration of heights around the mean can be seen. 
@@ -128,9 +128,9 @@ Regarding the areas, the greater presence of large areas causes the distribution
 
 
 \begin{figure}[!hbtp]
-    \\includegraphics[width=0.8\textwidth]{imgs/distributions.svg.pdf}
+    \includegraphics[width=0.8\textwidth]{imgs/distributions.pdf}
     \centering
-    \caption{Distribution of the heights and areas of the tetrahedrons in the initial triangulation and after the process of removing short segments and increasing the area of the small triangles. The blue bars represent the distribution of the heights of the tetrahedra in the initial triangulation, while the orange bars represent the distribution of the heights of the tetrahedra after the processing. Also, the mean values of each distribution are represented by the dashed lines, cyan for the initial distribution and red for the final distribution.}
+    \caption{Distribution of the heights and areas of the tetrahedra in the initial triangulation and after the process of removing short segments and increasing the area of the small triangles. The blue bars represent the distribution of the heights of the tetrahedra in the initial triangulation, while the orange bars represent the distribution of the heights of the tetrahedra after the processing. Also, the mean values of each distribution are represented by the dashed lines, cyan for the initial distribution and red for the final distribution.}
 \label{fig:distribution}
 \end{figure}
 
@@ -138,12 +138,12 @@ In view of the results shown in the figure above, it is questionable whether thi
 As mentioned above, in the example shown, the number of vertices has been reduced from 153 to 118, which is a reduction of 22.9\%.
 Additionally, the number of simplices has been reduced from 277 to 211, which is a reduction of 23.8\%.
 But the question is whether this reduction is significant enough to justify the processing of the vertices.
-In order to answer this question, it is necessary to look at the \textcolor{blue}{Equation} \ref{eq:euler_3}.
-From this equation can be noticed that the number of simplices generated is almost twice the number of vertexes.
+In order to answer this question, it is necessary to look at the \cref{eq:euler_3}.
+From this equation can be noticed that the number of simplices generated is almost twice the number of vertices.
 Then, if the goal of this process was to keep the vertex density constant in each iteration, the number of vertices should be reduced by half.
-In the example shown, the number of vertexes has been reduced by almost a quarter, which is not enough to keep the vertex density constant.
-It is questionable whether it is only in the example used that the desired reduction is not achieved, but that perhaps in other situations it is. 
-Or that in higher layers the reduction achieved is such that it could compensate for the excess of points in lower layers. 
+In the example shown, the number of vertices has been reduced by almost a quarter, which is not enough to keep the vertex density constant.
+It is questionable whether it is only in the example used that the desired reduction is not achieved, but perhaps in other situations it is. 
+Or that in higher layers, the reduction achieved is such that it could compensate for the excess of points in lower layers. 
 But the reality is that there can never be any assurance that such a reduction in points is achieved by this algorithm, since at no time is the number of points, or triangles, that is wanted to be obtained at the end of the processing being controlled. 
 Therefore, the algorithm explained above could be considered an algorithm for improving the distribution of points, but it cannot be used to control the density of points. 
 In order for an algorithm to be used to keep the point density constant, it must have a parameter implemented in its logic that indicates the desired target number of points. 
@@ -152,9 +152,9 @@ The algorithm could be modified so that, once nearby points have been eliminated
 But this would only lead to situations where the nodes have too many connections, as it does not avoid excessive point generation but only clustering at certain locations.
 
 
-Other than this, in the previous section, it was explained that in order to obtain the position of each vertex, \textcolor{blue}{Problem} \ref{eq:opt_func_sum} was solved for each of the triangles. 
+Other than this, in the previous section, it was explained that in order to obtain the position of each vertex, \cref{eq:opt_func_sum} was solved for each of the triangles. 
 This problem is formulated in such a way that the solution obtained complies with the angularity constraints. 
-Then, one could realise that it does not make sense to base the solution of the point density control on the movement of the generated points since the simple fact of moving these points may be causing the angularity conditions are no longer be fulfilled. 
+Then, one could realise that it does not make sense to base the solution of the point density control on the movement of the generated points since the simple fact of moving these points may cause the angularity conditions are no longer be fulfilled. 
 Therefore, it makes no sense to implement a solution that does not guarantee the fulfilment of the objectives of the initial approach. 
 If there is a solution to this problem, it cannot involve the movement of the generated points. 
 \end{document}

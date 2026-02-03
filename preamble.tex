@@ -7,16 +7,14 @@
 \usepackage{float}
 \usepackage{epstopdf}
 \usepackage{svg}
-\usepackage[a4paper,width=150mm,top=25mm,bottom=25mm]{geometry}
 \usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,factor=1100,stretch=10,shrink=10]{microtype}
-\usepackage{hyperref}
 \usepackage{optidef}
 \usepackage{import}
 \usepackage{verbatim}
 \usepackage{listings}
-\usepackage{xcolor}
 \usepackage{array}
 \usepackage{pgfplots}
+\usepackage{multirow}
 \definecolor{keywordcolor}{RGB}{139,0,255}     % fuerte violeta
 \definecolor{basecolor}{RGB}{0,102,204}        % azul claro
 \definecolor{functioncolor}{RGB}{255,172,0}    % amarillo fuerte
@@ -71,9 +69,18 @@
 backend=bibtex,
 style=ieee,
 citestyle=numeric,
-maxbibnames=99
+sorting=none,
+maxnames=3,
+minnames=1
 ]{biblatex}
 \addbibresource{bib.bib}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue,
+    }
 \usepackage{afterpage}
 \usepackage{caption}
 \usepackage{cancel}
@@ -84,31 +91,158 @@ maxbibnames=99
 \usepackage{listings}
 \newcommand{\hsp}{\hspace{20pt}}
 \setlength{\parskip}{1em}
-\setcounter{chapter}{1}
-\hypersetup{
-    colorlinks=true,
-    linkcolor=blue,
-    urlcolor=blue,
-    citecolor=blue,
-    }
+
 \usepackage[nameinlink,noabbrev,capitalize]{cleveref}
 
-\newcommand\note[1]{\textcolor{red}{#1}\PackageWarning{MyWarnings}{#1}}
+\makeatletter
+\renewcommand\part{%
+  \if@openright
+    \cleardoublepage
+  \else
+    \clearpage
+  \fi
+  \thispagestyle{plain}%
+  \if@twocolumn
+    \onecolumn
+    \@tempswatrue
+  \else
+    \@tempswafalse
+  \fi
+  \null\vfil
+  \secdef\@part\@spart}
+\makeatother
+
+\usepackage[
+    inner=30mm, % margen interior (izquierdo en pares, derecho en impares)
+    outer=25mm, % margen exterior
+    top=30mm,
+    bottom=25mm,
+    a4paper
+]{geometry}
+
+% ---------------- FUENTE ----------------
+\renewcommand{\baselinestretch}{1.5} % interlineado 1.5
+
+% ---------------- COLOR ----------------
+\usepackage{xcolor}
+% Pantone Process Black = negro puro
+\definecolor{PantoneBlack}{RGB}{45,41,38} % o simplemente black
+\definecolor{nebrijaRed}{RGB}{186,12,47}
+\color{PantoneBlack}
+
+% ---------------- JUSTIFICACIÓN Y SANGRÍA ----------------
+\usepackage{setspace}
+\setstretch{1.5} % interlineado
+\setlength{\parindent}{1cm} % sangría de 1 cm
+%\setlength{\parskip}{0pt} % sin espacio entre párrafos
+\raggedbottom
+\usepackage{microtype} % mejora espaciado de texto
+\usepackage{ragged2e}
+\justifying % texto justificado
+
+% ---------------- CAPÍTULOS Y TÍTULOS ----------------
+\usepackage{titlesec}
+\usepackage{etoolbox}
+\usepackage{xcoffins}
+% Evitar guiones automáticos en los títulos
+\pretocmd{\chapter}{\hyphenpenalty=10000\exhyphenpenalty=10000\sloppy}{}{}
+
+%------
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries\color{nebrijaRed}}
+  {\begin{flushright}
+    \color{PantoneBlack}
+     \vspace*{-6cm} % mueve el número más arriba
+     \fontfamily{pzc}
+     \fontsize{90}{100}\selectfont\thechapter
+   \end{flushright}}
+  {-5 em}
+  {\Huge\bfseries\color{nebrijaRed}\MakeUppercase}
+  [\vspace{-1.3em}\tikz{\draw[nebrijaRed, line width=0.8pt] (0,0)--(\textwidth,0);}]
+  
+% Espaciado antes y después del título
+\titlespacing*{\chapter}{0pt}{0pt}{20pt}
+%------
+% ---
+\newcommand\headerdisplay[1]{%
+  \huge
+  \vskip.5\baselineskip
+  \filcenter\MakeUppercase{#1}%
+  \vskip.0\baselineskip
+}
+\NewCoffin\mytmpa
+\NewCoffin\mytmpb
+\newcommand\placeabove[3][0pt]{%
+ \SetHorizontalCoffin\mytmpa{#2}%
+ \SetHorizontalCoffin\mytmpb{#3}%
+ \JoinCoffins*\mytmpb[hc,t]\mytmpa[hc,b](0pt,#1)%
+ \TypesetCoffin\mytmpb
+}
+
+\renewcommand\thepart{\Roman{part}}
+\titleclass{\part}{top} % make part like a chapter
+\titleformat{\part}[frame]
+  {\normalfont \bfseries\color{nebrijaRed}}
+  {\filcenter\placeabove[2\baselineskip]
+  {\fontsize{42}{50}\selectfont\color{nebrijaRed}$\mathcal{PART}$}{\fontfamily{pzc}\selectfont\fontsize{90}{100}\selectfont\bfseries\hspace{0.2em}\color{PantoneBlack}\thepart\hspace{0.2em}}}
+  {0pt}
+  {\headerdisplay}
+\titlespacing*{\part}{0pt}{0.3\textheight}{40pt}
 
 
-\graphicspath{
-%{sections/1_Motivation_and_objectives/Motivation/imgs/}
-%{sections/2_Literature_review/Literature_review/imgs/}
-{sections/3_Methodology_1/1_Random_points_connection/imgs/}
-{sections/3_Methodology_1/2_Pseudorandom_points_generation/imgs/}
-{sections/3_Methodology_1/3_Controlled_random_connections/imgs/}
-{sections/4_Methodology_2/1_layer_generation/imgs/}
-{sections/4_Methodology_2/2_adapted_tessellation/imgs/}
-{sections/4_Methodology_2/3_density_reduction/imgs/}
-{sections/4_Methodology_2/4_structure_consolidation/imgs/}
-{sections/5_Case_studio_1/1_Nonplanar_gcode/imgs/}
-%{sections/6_Case_studio_2/case_studio_2/imgs/}
-%{sections/7_Discussion_and_conclusion/discussion/imgs/}
-  }
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{nebrijaRed}}
+  {\thesection}{1em}{}
 
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{nebrijaRed}}
+  {\thesubsection}{1em}{}
+
+% ---------------- CABECERAS Y PIE DE PÁGINA ----------------
+\usepackage{fancyhdr}
+\fancyhf{}
+
+\fancyfoot[R]{\thepage}
+
+% Encabezado:
+% - En páginas pares (izquierda): título del capítulo
+% - En páginas impares (derecha): título de la sección
+\fancyhead[LE]{\large\nouppercase{\leftmark}}
+\fancyhead[RO]{\large\nouppercase{\rightmark}}
+
+% Línea de encabezado
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Aplica el estilo
+\pagestyle{fancy}
+
+% --- Estilo limpio para capítulos ---
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \fancyfoot[LE,RO]{\thepage}
+  \renewcommand{\headrulewidth}{0pt}
+}
+
+% --- Asegura que los capítulos usen el estilo 'plain' ---
+\let\oldchapter\chapter
+\renewcommand{\chapter}{%
+  \clearpage%
+  \thispagestyle{plain}%
+  \oldchapter%
+}
+
+% ---------------- CAPÍTULOS EN PÁGINA DERECHA ----------------
+\usepackage{etoolbox}
+\makeatletter
+\pretocmd{\chapter}{\cleardoublepage}{}{}
+\makeatother
+
+% ---------------- PDF ----------------
+\pdfminorversion=4
+\pdfcompresslevel=9
+\pdfobjcompresslevel=3
+
+
+\let\cleardoublepage\clearpage
 \usepackage{subfiles}

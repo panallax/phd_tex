@@ -16,10 +16,10 @@ But, they are called "complex" for some reason, and that is because they are com
 This is generally due to they are hard to define geometrically.
 
 In the case of tessellations, it could not be otherwise.
-All complex geometries are concave, or non-convex.
+All complex geometries are concave or non-convex.
 That means that not all points inside the geometry can be linked with a straight line without intersecting the boundary.
 This simple definition hides a bunch of complexities behind it.
-One example of this is shown in \textcolor{blue}{Figure} \ref{fig:non_convex}, where their boundary is not well-defined.
+One example of this is shown in \cref{fig:non_convex}, where their boundary is not well-defined.
 Convex polygons are easy to tessellate because their boundary is always defined by their convex hull.
 But in the case of non-convex polygons, there are many possible boundaries.
 Therefore, conventional tessellation algorithms do not work for tessellating non-convex polygons.
@@ -57,7 +57,7 @@ In this section, all these routines will be explained.
 
 The easiest way to detect the presence of holes is to analyse the number of surfaces present in the volume.
 To do so, the volume has to be decomposed into its different surfaces: top, bottom and lateral.
-As mentioned in the previous sections, a STL file of the three-dimensional mesh is input to the algorithm.
+As mentioned in the previous sections, an STL file of the three-dimensional mesh is input to the algorithm.
 This file is processed using the Python package \textit{Trimesh}, which implements some functions that facilitate the manipulation and analysis of meshes.
 Once the mesh is loaded, its bounding box is calculated, and the minimum and maximum \textit{z}-values are retrieved.
 Using these bounding values, the bottom and top surfaces can be detected by selecting the points whose \textit{z}-coordinate is equal to the minimum and maximum \textit{z}-value.
@@ -69,7 +69,7 @@ So, by splitting the mesh into connected components, all the present lateral mes
 If the number of meshes obtained at this point is greater than one, it is concluded that there are holes in the volume.
 To identify which of the side meshes is the outer one and which are the inner ones, the surfaces are sorted according to the number of points that compose them.
 Since the characteristic length used during the meshing process is the same for all surfaces, the external surface will be composed of a large number of points as it envelopes the others and has the largest perimeter\footnote{While it is true that there may be figures with holes whose perimeter is greater than the exterior (e.g. heat exchangers), these cases will not be considered in this work, as they are considered very specific and do not fall within the scope of the thesis. Therefore, it is considered that the perimeter of a figure that encloses another will always be greater.}. 
-\textcolor{blue}{Figure} \ref{fig:meshes_hole} shows the result of this process applied to a rectangular prismatic part with a central hole and four drill holes.
+\cref{fig:meshes_hole} shows the result of this process applied to a rectangular prismatic part with a central hole and four drill holes.
 From a rectangular prismatic part with a hole in the middle and four bolt holes.
 The different meshes obtained from the process have been coloured: top mesh in blue, bottom mesh in green, outer lateral mesh in white and inner lateral meshes in red.
 
@@ -92,7 +92,7 @@ The different meshes obtained from the process have been coloured: top mesh in b
 \subsubsection{Boundary definition}
 
 \textit{Triangle}'s routines draw on the Planar Straight Line Graph\footnote{Planar Straight Line Graph (PSLG) is a collection of vertices and segments. Segments are edges whose endpoints are vertices in the PSLG, and whose presence in any mesh generated from the PSLG is enforced.} (PSLG) to define the boundaries of the polygons to be triangulated.
-PSLGs are collections of points and segments, defined by the concatenated pairs of indices of the points they join. In the \textcolor{blue}{Figure} \ref{fig:pslg}, an example of the PSLG that defines a dart-like polygon is shown.
+PSLGs are collections of points and segments, defined by the concatenated pairs of indices of the points they join. In the \cref{fig:pslg}, an example of the PSLG that defines a dart-like polygon is shown.
 
 \begin{figure}[!htbp]
     \centering
@@ -106,11 +106,11 @@ These perimeters will correspond to the boundaries that have to be defined and i
 Once the section is obtained, it is divided by the connected components and the number of points of each component is simplified by merging collinear segments\footnote{\label{footnote:simplify}Trimesh's \href{https://trimesh.org/trimesh.path.path.html\#trimesh.path.path.Path2D.simplify}{simplify} function is used.} to avoid an excess of points in the boundary. 
 Finally, the resulting points are iterated, and the index of each point is paired with the next one, obtaining the segments that define each of the boundaries present in the volume.
 
-An example of this procedure is shown in \textcolor{blue}{Figure} \ref{fig:reduction}.
-In the \textcolor{blue}{Figure} \ref{fig:reduction} \textcolor{blue}{A} the points retrieved from the section at \textit{z}-minimum value are shown. 
+An example of this procedure is shown in \cref{fig:reduction}.
+In the \cref{fig:reduction} \textcolor{blue}{A} the points retrieved from the section at \textit{z}-minimum value are shown. 
 Also, coloured depending on whether they are points from the outer mesh or the inner meshes.
 It can be seen that all sections are composed of many points and that it is necessary to reduce the number of points.
-After removing all the collinear segments, the number of points is reduced as shown in the \textcolor{blue}{Figure} \ref{fig:reduction} \textcolor{blue}{B}.
+After removing all the collinear segments, the number of points is reduced as shown in the \cref{fig:reduction} \textcolor{blue}{B}.
 As the outer perimeter is rectangular, almost all its segments are collinear.
 So, the only remaining points are the ones at each corner.
 However, the inner perimeters are circles, so they do not have collinear segments. 
@@ -123,12 +123,12 @@ The greater the tolerance, the lower the final number of points.
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \\includegraphics[width=\textwidth]{imgs/before_reduction.svg.pdf}
+        \includegraphics[width=\textwidth]{imgs/before_reduction.pdf}
         \caption{Points obtained from the section of the volume}
     \end{subfigure}
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \\includegraphics[width=\textwidth]{imgs/after_reduction.svg.pdf}
+        \includegraphics[width=\textwidth]{imgs/after_reduction.pdf}
         \caption{Reduction of the collinear points and circular paths.}
     \end{subfigure}
     \caption{Example of points reduction. Image \textbf{A} shows the initial points obtained from the section of the volume. Image \textbf{B} shows the resulting points from removing all the collinear points and substituting the circles with circular paths composed of fewer points.}
@@ -164,50 +164,50 @@ When using constraints, such as quality mesh (\textit{-q}) or maximum area (\tex
 Those points are needed sometimes to guarantee the imposed constraints.
 Far from being a drawback, this feature is essential to generate the initial layer tessellation.
 As stated in the definition of the problem at the beginning of this manuscript, controlling pore size is one of the objectives sought with this methodology.
-In the \textcolor{blue}{Figure} \ref{fig:reduction} can be seen that at this point only a set of contours is disposed. 
+In the \cref{fig:reduction} can be seen that at this point only a set of contours is disposed. 
 Using Stainer points and area restriction, it is possible to fill the initial surface with the necessary number of points to ensure that the average area of the initial triangles is equal to the defined pore size.
 Since the maximum area value set with the parameter \textit{-a} to the triangulation function is not directly related to the desired pore size, it is necessary to find the value that generates the tessellation whose average triangle area value is equal to the desired value.
 To do this, a binary search is performed in the interval $[pore\_size/10, pore\_size*10]$. 
 At each step, a tessellation is generated with a maximum area restriction equal to the midpoint of the search interval, and the average area of all triangles is calculated. 
 To ensure convergence of the search, a tolerance of 5\% of the searched pore size is allowed. 
 Also, a maximum of 50 iterations is set to find the desired value. 
-This is done in order to avoid infinite loops, since not any pore size can be obtained. 
+This is done in order to avoid infinite loops, since any pore size can be obtained. 
 There will always be a maximum pore size limit that can be reached, which will depend on the topology in each case. 
 The parameter \textit{-q} is also used to obtain more regular triangles to obtain more uniform tetrahedra in the first layer.
-In the \textcolor{blue}{Figure} \ref{fig:first_layer_hole}, two examples of the tessellations obtained from the section in \textcolor{blue}{Figure} \ref{fig:reduction} \textcolor{blue}{B} and a pore area of 80 $mm^{2}$ and 50 $mm^{2}$ respectively are shown.
+In the \cref{fig:first_layer_hole}, two examples of the tessellations obtained from the section in \cref{fig:reduction} \textcolor{blue}{B} and a pore area of 80 $mm^{2}$ and 50 $mm^{2}$ respectively are shown.
 
 
 \begin{figure}[!htbp]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \\includegraphics[width=\textwidth]{imgs/first_layer_hole_tess.svg.pdf}
+        \includegraphics[width=\textwidth]{imgs/first_layer_hole_tess.pdf}
         \caption{Pore area = 80 $mm^{2}$}
     \end{subfigure}
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \\includegraphics[width=\textwidth]{imgs/first_layer_hole_50.svg.pdf}
+        \includegraphics[width=\textwidth]{imgs/first_layer_hole_50.pdf}
         \caption{Pore area = 50 $ mm^{2}$}
     \end{subfigure}
-    \caption{Example of \textcolor{blue}{Figure} \ref{fig:reduction} \textcolor{blue}{B}  section tessellation. Image \textbf{A} shows the tessellation obtained with a pore area parameter equal to 80 $ mm^{2}$. Image \textbf{B} shows tessellation obtained with a pore area parameter equal to 50 $mm^{2}$.}
+    \caption{Example of \cref{fig:reduction} \textcolor{blue}{B}  section tessellation. Image \textbf{A} shows the tessellation obtained with a pore area parameter equal to 80 $ mm^{2}$. Image \textbf{B} shows tessellation obtained with a pore area parameter equal to 50 $mm^{2}$.}
     \label{fig:first_layer_hole}
 \end{figure}
 
-Furthermore, to show the effect that the \textit{-q} parameter has on tessellation, a comparison between two tessellations with a pore size of 100 $mm^{2}$ is shown in \textcolor{blue}{Figure} \ref{fig:comp_q}. 
-The image shows the points of the initial section (\textcolor{blue}{Figure} \ref{fig:reduction} \textcolor{blue}{B}) that are input into the triangulation function in black, the Steiner points generated by the triangulation routine with the \textit{-q} parameter activated in orange, and the Steiner points generated by the routine with the \textit{-q} parameter deactivated in green. 
+Furthermore, to show the effect that the \textit{-q} parameter has on tessellation, a comparison between two tessellations with a pore size of 100 $mm^{2}$ is shown in \cref{fig:comp_q}. 
+The image shows the points of the initial section (\cref{fig:reduction} \textcolor{blue}{B}) that are input into the triangulation function in black, the Steiner points generated by the triangulation routine with the \textit{-q} parameter activated in orange, and the Steiner points generated by the routine with the \textit{-q} parameter deactivated in green. 
 In addition, the triangulation that would be obtained with the \textit{-q} parameter deactivated is shown by dotted purple lines. 
 It can be seen that in this case, the triangles obtained are mostly obtuse. When the \textit{-q} parameter is activated, they tend to be more acute.
 
 \begin{figure}[!htbp]
     \centering
-    \\includegraphics[width =\textwidth]{imgs/q_param_comp.svg.pdf}
+    \includegraphics[width =\textwidth]{imgs/q_param_comp.pdf}
     \caption{Comparison between the tessellation obtained when activating or deactivating the \textit{-q} parameter. The initial section points are shown in black, the Steiner points generated by the triangulation routine with the \textit{-q} parameter activated in orange, and the Steiner points generated by the routine with the \textit{-q} parameter deactivated in green. Also, the triangulation that would be obtained with the \textit{-q} parameter deactivated is shown by dotted purple lines. }
     \label{fig:comp_q}
 \end{figure}
 
 \section{Generation of the contour segments (TBC)}
 
-In the \textcolor{blue}{Section} \ref{{subsec:shell_struct_connection}}, the methodology used to join the structure and the surface of the volume was explained.
+In the \cref{{subsec:shell_struct_connection}}, the methodology used to join the structure and the surface of the volume was explained.
 Since the geometries admitted up to that point were merely convex, the outermost generated vertices, the convex hull, could be obtained and projected orthogonally to the surface of the volume. 
 Now, the supported geometries include non-convex geometries. 
 Therefore, another strategy must be found to project the outer vertices onto the surface of the volume, since it is not possible to calculate the convex hull of this type of structure, as has been proven above. 
@@ -217,7 +217,7 @@ This section will explain what strategies were followed to overcome each of the 
 
 \subsection{Obtaining the boundary segments}\label{sec:segments}
 
-\textcolor{blue}{Figure} \ref{fig:comp_q} shows an example of triangulation carried out for a surface with several holes. 
+\cref{fig:comp_q} shows an example of triangulation carried out for a surface with several holes. 
 In it, the reader can see that the segments introduced to the triangulation function are those formed after joining the black points, obtained after reducing the number of points extracted from the volume section. 
 These initial points and segments, together with the pore size, make it possible to obtain the triangulation shown in the figure by adding several Steiner points. 
 It can be noticed that several of these Steiner points were added by the engine, in the middle of the segments forming the contour. 
@@ -350,7 +350,7 @@ This will help to create the segments for the following layers and identify whic
 \subsection{Surface points identification}
 
 Once triangulation is complete, the tessellation adaptation routine modifies it to obtain the desired number of simplices, and the final list of simplices is obtained. 
-For each of these simplices, a tetrahedron is generated in the same way as explained in \textcolor{blue}{Section} \ref{sec:tetrahedra_gen}.
+For each of these simplices, a tetrahedron is generated in the same way as explained in \cref{sec:tetrahedra_gen}.
 
 From now on, simplices that contain a boundary segment will be known as "surface simplices" and the points generated from them will be known as "surface points". The reason for grouping surfaces into interior and exterior surfaces is that the exterior surface will always be present, but the interior surfaces may not be present (e.g., a surface without holes) or may even cease to be present throughout the volume (e.g., screw holes). 
 Therefore, it is necessary to consider each of the present surfaces individually. 
@@ -376,7 +376,7 @@ Once the number is simplices per layer is set after the triangulation of the fir
 In the following layers, it can only decrease due to they can be merged with neighbouring simplices.
 This problem can lead to situations in which the definition of the boundaries is compromised
 due to the loss of surface points arising after the union of several surface simplices.
-In the \textcolor{blue}{Figure} \ref{fig:cons1}, this issue is illustrated by showing the evolution of the boundary of a bolt hole among the first three layers.
+In the \cref{fig:cons1}, this issue is illustrated by showing the evolution of the boundary of a bolt hole among the first three layers.
 It can be noticed how the number of surface points available to define the bolt's surface decreases in each layer due to the aforementioned problem.
 This highlights the need to also control the number of surface simplices in each layer.
 
@@ -409,13 +409,14 @@ Otherwise, the boundaries could become mixed, resulting in a loss of consistency
 This only reinforces the hypothesis that each surface must be analysed individually to find the new points that belong to each one.
 Furthermore, another argument to reinforce this hypothesis is based on the fact that there may be situations in which a surface point may be closer to other surfaces than to the one to which it belongs. 
 Therefore, if the future projection of these points were carried out as in the previous chapter (projecting the points closest to the surface), surface points assignment errors could occur.
-This further justifies the need to analyse surfaces individually. \textcolor{blue}{Figure} \ref{fig:zoomin} shows an example of a situation similar to the one described above. 
+This further justifies the need to analyse surfaces individually. 
+\cref{fig:zoomin} shows an example of a situation similar to the one described above. 
 It shows a detail of a tessellation in which a point belonging to an interior surface (green) is very close to the exterior surface. 
 In the example shown, this problem does not occur, but it serves to show that it is a possible situation.
 
 \begin{figure}[!htbp]
     \centering
-    \\includegraphics[width =\textwidth]{imgs/zoomed_inset.svg.pdf}
+    \includegraphics[width =0.8\textwidth]{imgs/zoomed_inset.pdf}
     \caption{Example of tessellation where the surface points are coloured. Red points are surface points that belong to the outer surface, while green points belong to the different inner surfaces.}
     \label{fig:zoomin}
 \end{figure}
@@ -427,12 +428,12 @@ This only reinforces the need to analyse each surface separately.
 Therefore, it is not enough to look for simplices that contain at least two points belonging to the surface to classify a simplex as a surface simplex. 
 It is necessary to ensure that at least two points belong to the same surface.
 Although this may seem like a very inefficient strategy, it is the only way to ensure that the structure adapts perfectly to the limits of the initial volume.
-An example of this situation is shown in the \textcolor{blue}{Figure} \ref{fig:zoomin_2}.
+An example of this situation is shown in the \cref{fig:zoomin_2}.
 The blank triangle in the detail has two surface points, but since both belong to two different surfaces, this triangle cannot be considered as a surface simplex.
 
 \begin{figure}[!htbp]
     \centering
-    \\includegraphics[width =\textwidth]{imgs/zoomed_inset_2.svg.pdf}
+    \includegraphics[width =0.8\textwidth]{imgs/zoomed_inset_2.pdf}
     \caption{Example of a simplex containing two surface points that do not belong to the same surface.}
     \label{fig:zoomin_2}
 \end{figure}
@@ -443,7 +444,7 @@ As layers are created, the tessellations become more random, and with them the p
 These begin to take on unpredictable non-convex shapes.
 Some of these non-convex polygons can take on shapes that partially isolate other polygons. 
 When this happens to the surface simplices, a situation can arise in which a non-surface simplex contains two points from the same surface and could therefore also be considered a surface simplex. 
-An example of this can be seen in \textcolor{blue}{Figure} \ref{fig:zoomin_3}.
+An example of this can be seen in \cref{fig:zoomin_3}.
 As can be seen, the simplex shown in the detail surrounds the surface simplex and contains two points of the surface.
 Following the aforementioned criteria, this simplex should be considered as a surface simplex.
 But evidently it cannot be, because it is an interior polygon that does not contain any segment of the surface.
@@ -461,7 +462,7 @@ This is because surface simplices that have been joined with other interior simp
 
 \begin{figure}[!htbp]
     \centering
-    \\includegraphics[width =\textwidth]{imgs/zoomed_3.svg.pdf}
+    \includegraphics[width =0.8\textwidth]{imgs/zoomed_3.pdf}
     \caption{Example of a tessellation containing a detailed polygon which contains two surface points but cannot be considered as a surface simplex.}
     \label{fig:zoomin_3}
 \end{figure}
@@ -476,10 +477,10 @@ This prevents them from being selected during the joining process.
 Once the simplices joining process is complete, all removed triangles will be added back. 
 To ensure that the number of simplices at the end of the process remains as desired, the number of simplices to be joined will be equal to the final target number of simplices minus the number of surface simplices removed. 
 This maintains the number of simplices throughout the layers.
-In the \textcolor{blue}{Figure} \ref{fig:no_triang} \textcolor{blue}{A}, an example of what a triangulation would look like after the surface triangles have been removed is shown. 
+In the \cref{fig:no_triang} \textcolor{blue}{A}, an example of what a triangulation would look like after the surface triangles have been removed is shown. 
 The remaining triangles are then processed by the merging routine. 
 The isolated points belong to triangles whose vertices are contained in surfaces, and the fact that they are isolated does not affect the merging process.
-As can be seen in the \textcolor{blue}{Figure} \ref{fig:no_triang} \textcolor{blue}{B}.
+As can be seen in the \cref{fig:no_triang} \textcolor{blue}{B}.
 The following section will explain why the corners of the outer contour do not appear in the image.
 As a result of this new consideration, the final structure created more faithfully reproduces the surface of the initial volume, as will be shown in forthcoming chapters.
 In addition, it is worth mentioning that these modifications do not affect the performance of the methodology for geometries without holes.
@@ -488,12 +489,12 @@ In addition, it is worth mentioning that these modifications do not affect the p
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \\includegraphics[width=\textwidth]{imgs/triang_without_surface_simp.svg.pdf}
+        \includegraphics[width=\textwidth]{imgs/triang_without_surface_simp.pdf}
         \caption{Triangulation after removing the triangles that contain a segment of any surface}
     \end{subfigure}
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \\includegraphics[width=\textwidth]{imgs/no_triang_final.svg.pdf}
+        \includegraphics[width=\textwidth]{imgs/no_triang_final.pdf}
         \caption{Tessellation obtained after the merging process and adding the surface triangles}
     \end{subfigure}
     \caption{Example of tessellation obtained without considering the surface triangles during the merging process. Image \textbf{A} shows the triangulation input to the merging process, which does not contain the surface triangles. Image \textbf{B} shows the tessellation obtained from the merging process after adding the discarded triangles.}
@@ -503,7 +504,7 @@ In addition, it is worth mentioning that these modifications do not affect the p
 The procedure explained so far for detecting vertices that may be surface points is only valid as long as the generated vertices are within the volume. 
 In the last layers, where vertices begin to be generated outside the volume, this task becomes much more complicated.
 
-In the \textcolor{blue}{Section} \ref{sec:termination_cond}, the strategy followed in the last layers to achieve layer construction, even though certain vertices have been generated outside the volume, is explained. 
+In the \cref{sec:termination_cond}, the strategy followed in the last layers to achieve layer construction, even though certain vertices have been generated outside the volume, is explained. 
 It is mentioned that when a base generated a vertex outside the volume, it was not added, but rather the base. 
 The strategy remains the same, but the procedure becomes more complicated when dealing with non-convex geometries because the surface points must be identified at all times to construct the edge segments.
 
@@ -540,7 +541,7 @@ To determine which of the added points should be considered to build the boundar
 \text{Surface indices: } [0 + 120,\, 2 + 120] = [120,\, 122]
 \]
 
-Therefore, only these two indices are added to the index list used for segment construction. The rest of the valid points are added to the geometry but are not used to form segments at this stage.
+Therefore, only these two indices are added to the index list used for segment construction. The rest of the valid points are added to the geometry, but are not used to form segments at this stage.
 
 \subsection{Joining surface points to surfaces}
 
@@ -574,7 +575,7 @@ For each key in the dictionary, the list of meshes is iterated to find out which
 As each key in the dictionary has an associated value that corresponds to the indices of the vertices that correspond to the surface points of each of the detected surfaces, these points can be retrieved, and the centroid of the set can be calculated. 
 Then, the centroid of each mesh that corresponds to the centroid of the points is sought, taking into account a certain tolerance. 
 If two centroids coincide, it means that the points of that key correspond to the surface pointed at that moment. 
-Once this is done, the coordinates of each of the surface points are retrieved and their projection onto the surface is calculated. 
+Once this is done, the coordinates of each of the surface points are retrieved, and their projection onto the surface is calculated. 
 
 As mentioned above, the orthogonal projection will be the point with the shortest distance between the point in question and the surface. 
 If a surface point has exceeded its corresponding mesh, i.e., is above it, its orthogonal projection will be a point located at the upper limit of the mesh. 
@@ -584,10 +585,10 @@ A representative number of dead points is necessary to consider a mesh dead beca
 However, the fact that one point has exceeded the mesh does not imply that the rest have and therefore must be eliminated. 
 In addition, a 1 cm margin was added to consider a point as having exceeded a mesh and should be declared a dead point.
 Once all dictionary entries have been processed, all dead meshes and their corresponding dictionary entries will be removed so that they will not be part of the surface segments in the next triangulation.
-Thanks to this process, each layer can be rigorously adapted to the internal geometry of each volume. Once each point has been projected to the proper surface, the boundary segments to tessellate the following layer can be obtained as explained in \textcolor{blue}{Section} \ref{sec:segments}.
+Thanks to this process, each layer can be rigorously adapted to the internal geometry of each volume. Once each point has been projected to the proper surface, the boundary segments to tessellate the following layer can be obtained as explained in \cref{sec:segments}.
 
 This method has one unavoidable drawback. 
-If the workpiece has a rectangular shape, its corners cannot be mapped and will be lost (\textcolor{blue}{Figure} \ref{fig:zoomin_3})
+If the workpiece has a rectangular shape, its corners cannot be mapped and will be lost (\cref{fig:zoomin_3})
 This is because the orthogonal projection of the points generated in the corner tetrahedra will never lie on the corners. 
 To maintain the original shape, points would have to be forced to appear at the corners. 
 But this poses two problems. The first is that adding points that are not part of the originals would cause them to float in space, without continuity, since they do not arise from previous ones. 
@@ -597,73 +598,73 @@ Therefore, it was decided that accepting the loss of the corners is the best sol
 
 \section{Growth vector conditioning}
 
-\textcolor{blue}{Section} \ref{sec:tetrahedra_gen} introduces the concept of growth vector. 
+\cref{sec:tetrahedra_gen} introduces the concept of growth vector. 
 This vector allows the direction of growth of the tetrahedra to be conditioned to adapt to inclined or conical geometries. 
 Depending on the distance of the tetrahedron from the centre of the section and its height, the vector will have a greater or lesser slope.
 Growth vectors in conical geometries, for example, are completely vertical if their base is located at the centre of the section and are parallel to the external surface if they are generated from surface simplices.
 Therefore, the simplices between these cases will generate growth vectors with a gradient in the inclination between these two cases.
-\textcolor{blue}{Figure} \ref{fig:gv_cond_1} illustrates an example of this gradient of growth vector inclinations in a section of a conical volume. 
+\cref{fig:gv_cond_1} illustrates an example of this gradient of growth vector inclinations in a section of a conical volume. 
 Due to radial symmetry, only vectors between $r=0$ and $r=R$ are shown.
 
 \begin{figure}[!htbp]
     \centering
-    \\includegraphics[width =0.9\textwidth]{imgs/gv_1.svg.pdf}
+    \includegraphics[width =0.9\textwidth]{imgs/gv_1.pdf}
     \caption{Example of the distribution of growth vectors among a conical section.}
     \label{fig:gv_cond_1}
 \end{figure}
 
 Volumes containing holes cannot use this growth vector definition, as they have areas without material that should not be taken into account when calculating the growth vector slope. 
-For example, suppose an annular section with an inner radius $R_1$ and an outer radius $R_2$, as shown in \textcolor{blue}{Figure} \ref{fig:gv_cond_2}. 
+For example, suppose an annular section with an inner radius $R_1$ and an outer radius $R_2$, as shown in \cref{fig:gv_cond_2}. 
 According to the current definition of growth vector, the vectors from the surface simplices of the inner surface will generate vertices outside the volume, since their growth vectors point towards the centre of the volume, which is not within the domain of the volume.
 It can be noticed, in the figure, that the innermost vector begins inside the volume but ends outside it. 
 In that case, the vertex generated by this vector would be outside the volume.
 
 \begin{figure}[!htbp]
     \centering
-    \\includegraphics[width =0.9\textwidth]{imgs/gv_2.svg.pdf}
-    \caption{Example of distribution of growth vector along a annular section. Straight line represents the outer surface while dashed line represents the inner surface. Gray vectors represent the vectors that  would lie outside the volume.}
+    \includegraphics[width =0.9\textwidth]{imgs/gv_2.pdf}
+    \caption{Example of distribution of growth vector along an annular section. The straight line represents the outer surface, while the dashed line represents the inner surface. Grey vectors represent the vectors that would lie outside the volume.}
     \label{fig:gv_cond_2}
 \end{figure}
 
 Therefore, the growth vectors of inner surface simplices should be parallel to those surfaces, regardless of their position. 
-Then, in a hollow volume, the growth vectors have to have inclinations that vary between the inclination of the inner surface and the inclination of the outer surface, as shown in \textcolor{blue}{Figure} \ref{fig:gv_cond_3}.
+Then, in a hollow volume, the growth vectors have to have inclinations that vary between the inclination of the inner surface and the inclination of the outer surface, as shown in \cref{fig:gv_cond_3}.
 It should be noted that this figure was obtained by varying the angle of an equispaced vector along the section, but it is not a possible solution to the problem posed. 
 It has only been added as visual support.
 
 \begin{figure}[!htbp]
     \centering
-    \\includegraphics[width =0.9\textwidth]{imgs/gv_3.svg.pdf}
-    \caption{Example of a linear growth vectors distribution along a annular section.}
+    \includegraphics[width =0.9\textwidth]{imgs/gv_3.pdf}
+    \caption{Example of a linear growth vector distribution along an annular section.}
     \label{fig:gv_cond_3}
 \end{figure}
 
 To solve this, the growth vector is multiplied by a slope adjustment constant, $\alpha \in [0,1]$, so that the vectors are more vertical the closer they are to the inner surface and take their original value near the outer surface. 
 It was decided to use a sigmoid function to define this constant, rather than a linear function, to obtain areas of little variation in slope near each of the extremes.
-Specifically, a hyperbolic tangent function adjusted to the interval [0,1] was used (\textcolor{blue}{Equation} \ref{eq:tanh}), to which a value \textit{k} was added to modify the slope. 
+Specifically, a hyperbolic tangent function adjusted to the interval [0,1] was used (\cref{eq:tanh}), to which a value \textit{k} was added to modify the slope. 
 To calculate $\alpha$, the inner and outer radius values of the section are first calculated, and then the relative position of the base with respect to the midpoint of both limits is normalised. 
 
 \begin{equation}\label{eq:tanh}
     \alpha(x,k) = \frac{1}{2}\left( \tanh\left( k\cdot\frac{x -\left(outer\:radius + inner\:radius  \right)/2}{outer\:radius - inner\:radius} \right) +1 \right)
 \end{equation}
 
-\textcolor{blue}{Figure} \ref{fig:alpha} shows an example of how the value \textit{k} affects the slope of the function. 
+\cref{fig:alpha} shows an example of how the value \textit{k} affects the slope of the function. 
 For this purpose, values of $R_1 = 5$ cm and $R_2 = 10$ cm have been used. 
 
 \begin{figure}[!htbp]
     \centering
     \includegraphics[width =0.7\textwidth]{imgs/alpha.png}
-    \caption{Comparison of \textcolor{blue}{Equation} \ref{eq:tanh} for different values of $k$ in the interval [5,10] cm.}
+    \caption{Comparison of \cref{eq:tanh} for different values of $k$ in the interval [5,10] cm.}
     \label{fig:alpha}
 \end{figure}
 
 In this work, a value of $k=5$ has been used, as this yields a function that allows the alpha value to be practically constant in the vicinity of the extremes and also achieves a smooth slope. 
 However, this value is fully customisable.
-\textcolor{blue}{Figure} \ref{fig:gv_cond_4} shows how this factor affects to the growth vector along an annular section.
+\cref{fig:gv_cond_4} shows how this factor affects to the growth vector along an annular section.
 By doing this, the vectors near the surfaces tend to be parallel to them while suffering a smooth transition in the middle.
 
 \begin{figure}[!htbp]
     \centering
-    \\includegraphics[width =0.9\textwidth]{imgs/gv_4.svg.pdf}
+    \includegraphics[width =0.9\textwidth]{imgs/gv_4.pdf}
     \caption{Example of growth vector distribution utilising the adjustment parameter $\alpha$ to modify the inclination. In this example, a parameter $k=5$ was used.}
     \label{fig:gv_cond_4}
 \end{figure}

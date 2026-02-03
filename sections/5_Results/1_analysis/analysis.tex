@@ -1,0 +1,133 @@
+\documentclass[../../../main.tex]{subfiles}
+\begin{document}
+
+
+
+%\subsection{Mesh-gen: Python package modules and their integration}
+
+All the algorithms developed during this work have been included in a Python package called \textit{mesh-gen}. 
+Any reader interested in its use and operation can access it to complete all the concepts explained in the methodology of this work. 
+In addition, the algorithms used to perform the matrix calculation of reticular structures and their optimisation have been published in another module, Spyffness. 
+The main package consists of two main modules and a third module for generating the G-code that allows the generated structure to be printed in a non-planar form. 
+This third module has not been integrated into the overall flow, in case the user is not interested in printing the structure this way. 
+The names of the files will not be mentioned, as the package developed will continue to be maintained and evolved after the completion of this doctoral thesis, and some names may change. 
+
+Before the modules are executed, a script is executed to check that all the necessary configuration for the correct execution of the package is defined. 
+The logger is initialised and the execution folders are created, where all the files generated during execution will be saved: logs, graph and STL file.
+Next, it checks whether there is a graph stored in the temporary folder. 
+If so, the first module is not executed, and the graph stored in the temporary folder is used to generate the STL file. 
+This was implemented to avoid duplicate executions and thus speed up overall execution. 
+If there is no graph stored in the temporary folder, the geometry entered is processed, the points and sections of interest are extracted, and the first module is executed
+
+The first module is responsible for generating the skeleton of the structure. 
+This module receives as input the points and sections of the geometry to be processed and the values defined as the minimum allowed angle and pore size.
+Next, all the routines that carry out the procedures explained in the methodology are executed. 
+After obtaining the skeleton of the structure, it is saved in a pickle file as a Networkx object both in the folder created for execution and in the temporary folder, and the second module is executed.
+
+The second module is responsible for generating the mesh of the generated structure. 
+Within the configuration file, the user can choose whether or not to generate a fused mesh. 
+If so, this module executes George W. Hart's modified algorithm and generates a mesh that is saved as an STL file. 
+If not, a mesh will be generated based on the positioning of cylinders on the edges, which will not be joined, but is valid for printing the structure in 3D.
+\cref{fig:workflow} shows a diagram of the overall flow of the main modules. To avoid redundancy of images, a flow for the case in which a merged mesh is not generated is not included, as the other case shown is more complete. This case would only include a step for generating the cylinders and another for exporting the STL file. The thickness of the cylinders or edges used in both cases is the same.
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width= 0.8\textwidth]{imgs/workflow.pdf}
+    \caption{Overall workflow of the main modules of the mesh-gen package.}
+    \label{fig:workflow}
+\end{figure}
+
+\subsection{Analysis of design parameters: minimum angle}
+
+Although the objective of the developed algorithm is to generate self-supporting stochastic structures, the minimum angle that the edges can have was left as a design parameter so that it can be customised. 
+While it is true that a 45$^\circ$ angle is sufficient to ensure self-sustainability, it is not necessarily the minimum angle that can be printed. 
+Surfaces with smaller angles can also be printed under certain conditions. 
+For example, if the printing speed is reduced and cooling is increased, it is possible to print with smaller angles. 
+The minimum possible angle will always depend on the 3D printer and the printing conditions.
+\cref{fig:angles} shows the angle distribution obtained for four different minimum angle values. 
+It can be seen that there are effectively no edges with angles smaller than those established. 
+In addition, the minimum angle is not the most common, but rather that it is usually approximately 5$^\circ$ greater than the minimum. 
+There are very vertical angles that are usually present on the edges of the surface or on the last layer.  
+This figure proves that the algorithm is capable of generating structures that ensure the self-sustainability of all edges.
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width= 0.6\textwidth]{imgs/angles.pdf}
+    \caption{Distribution of angles obtained for four structures with different minimum allowed angle values.}
+    \label{fig:angles}
+\end{figure}
+
+\subsection{Analysis of design parameters: pore area}
+
+Another objective of the algorithm is to control the pore size in the generated structures. The definition of a pore is very ambiguous in reticular structures. 
+It is difficult to define the physical limits that delimit the pore region. 
+Closed-cell porous structures have a surface that partially or surrounds the pore, making it easy to define this region.
+However, in reticular structures, no surface can give an idea of the limits of this region. 
+In regular reticular structures, the pore can be defined as the volume of the unit cell used to design the structure.
+However, in the case of stochastic structures, there is no repeating unit cell from which to deduce porosity. 
+In these cases, it is more common to define the structure by its relative porosity rather than its pore size.
+However, relative porosity cannot be known a priori because, in this case, it depends on the size of the edges that will be used later. 
+Therefore, it was decided to discard the use of the term \textit{pore size} or \textit{pore volume} and use \textit{pore area} instead. 
+
+The pore area was defined as the average area of the polygons that make up any section of the structure. 
+Therefore, assuming that the volume to be processed has a constant section, if the number of polygons in each layer is the same, the average area must also be the same. 
+For this reason, in the first iteration of the algorithm, the lower section of the volume is extracted, and the necessary triangles are generated in it so that the average size of the areas is that indicated by the pore area parameter. 
+This process sets the number of polygons that will have to be in the following layers. 
+If the processed volume did not have a constant section, the number of polygons to be generated is recalculated based on the variation in area. 
+This ensures that the ratio of the perimeter to the number of polygons is constant. 
+To calculate the pore area, the area of each of the polygons that make up each of the sections is calculated. 
+Each of the polyhedra generated is stored in a dictionary where their points are classified according to whether they are base or apex points. 
+The base points are then triangulated, the area of the triangle face is calculated, and the sum of all the areas is obtained.
+As the triangulations are performed using the projections of each of the points, the value of the areas obtained is the value of the area of the projection onto the horizontal plane of each of the triangles, see \cref{fig:aberration}. 
+Therefore, to obtain the actual area, it is divided by the cosine of the minimum angle, as this will be the most common aberration value. 
+So, to obtain the desired pore area value throughout the layers, the pore area parameter set must be multiplied by the cosine of the minimum angle. 
+
+\begin{figure}[!htbp]
+    \centering
+    \input{imgs/area.tex}
+    \caption{Illustration of the aberration suffered by triangles when projecting points onto the horizontal plane.}
+    \label{fig:aberration}
+\end{figure}
+
+
+\cref{fig:areas} shows the evolution of the actual average angle compared to the configured angle for different values of the latter. 
+It can be seen that the first layers have a lower area value due to this aberration. 
+However, the area value then approximates the established value. In the last layers, the number of polygons may vary due to the termination criterion imposed. 
+This is why the area varies in the last layers. In the cases of pore sizes of 15 and 20 $mm^2$, the actual area differs from the set value, probably because in these configurations the median angle differed from the angle to a greater degree than the minimum angle. 
+Despite this, in the rest of the cases, it can be seen that the actual area value is the one set in most layers. 
+The last case has so few layers that the area does not have time to settle before the end.
+\cref{fig:areas_mean} shows the box plots for all areas present in each of the structures in \cref{fig:areas}.
+Both figures confirm that pore area is a parameter that can be controlled by the algorithm. 
+However, it is impossible to obtain a constant area value, as the same polygons are not used in each layer; instead, irregular tessellations are always used.
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width= 0.7\textwidth]{imgs/areas.pdf}
+    \caption{Average value of the pore area in each layer for each pore area value set.}
+    \label{fig:areas}
+\end{figure}
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width= 0.7\textwidth]{imgs/areas_mean.pdf}
+    \caption{Distribution of the area values in the whole structure for each pore area value set.}
+    \label{fig:areas_mean}
+\end{figure}
+
+\subsection{Analysis of design parameters: edge length}
+
+Although length is not a design parameter but rather a consequence of the design, it is interesting to analyse the edges that are generated. 
+\cref{fig:lengths_edges} shows the total and layer-by-layer distribution of the length of the edges obtained in a structure created from a cylinder 20 \textit{mm} in diameter and 30 \textit{mm} high with a pore size of 10 $mm^2$.
+It can be seen that the average size is similar in all layers, except in the last ones, where it increases. 
+This may be due to the elongation of the edges of the previous layer, resulting from the established termination criterion. 
+Although the distribution of lengths is indeed very wide, this was to be expected as it is a stochastic structure.
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width= 0.9\textwidth]{imgs/length.pdf}
+    \caption{Left image: strut length distribution for a structure generated within a cylinder of 20 \textit{mm} diameter and 30 \textit{mm} height with a pore area of 10 $mm^2$. Right image: distribution of this length in each of the layers of the structure.}
+    \label{fig:lengths_edges}
+\end{figure}
+
+\end{document}
+

@@ -1,0 +1,83 @@
+\documentclass[../../../main.tex]{subfiles}
+\begin{document}
+Although a great deal of work has been done and every effort has been made to achieve the greatest possible progress during the course of this project, the time available for its development was limited, and the work to be done is enormous. 
+This work is intended to be one more step on the long ladder to be built to achieve the goal of developing bone prostheses made from the patient's own living cells. 
+Improving the capability of regenerative medicine to replace the titanium prostheses currently in use, with all their drawbacks.
+ 
+The algorithm has been developed under the principles of simplicity, scalability, and versatility.
+The aim was for anyone to be able to use it and thus reach more users. 
+Above all, the aim is for as many people as possible to be able to improve it. 
+Under this premise, certain lines of future work are proposed below that could help advance the work that has begun to be developed in this project.
+
+\subsubsection{Geometric adaptability of the algorithm and performance} 
+
+Although efforts were made to optimise the algorithm as much as possible so that it could handle the greatest number of cases, there is currently a limitation that requires the geometry to be processed to have two flat bases at both ends, and its curvature and topological variations must not be too pronounced. 
+This limits the applicability of the algorithm, which may be discarded in cases where it cannot be applied. 
+Under the framework developed to generate the structures, a module for analysing the topology of the geometry could be added to adapt the generation of tetrahedra to this topology. 
+Currently, tessellations are modified by joining the smallest simplices with their neighbours.
+This behaviour could be modified so that the smallest triangles are not joined, but rather joined according to their location to better adapt the generation of tetrahedra to possible changes in topology. 
+This could also help to generate structures that are more resistant in possible areas of interest. 
+Since the smaller the bases of a tetrahedron, the lower its height, the more tetrahedra can be stacked in an area, reinforcing it. 
+This could result, for example, in structures with a greater number of tetrahedra on the inside than on the outside.
+ 
+In addition, the termination criterion has been very troublesome throughout development and needs to be improved. 
+Adaptation to non-flat surfaces could be improved if, instead of moving the vertices of the last layer to the highest \textit{z}-coordinate, the topology of the upper surface were taken into account.
+However, the most problematic aspect was considering the points of the bases that generated vertices outside the volume in the following layers. 
+This is why the edges in the last layers are more elongated. 
+Finding a way to allow the structure to be expanded to its appropriate filling of the volume is another improvement that should be implemented in the global flow.
+     
+During the development process, great effort was made to optimise the algorithm as much as possible to achieve maximum efficiency in the management of computational resources. 
+Despite this, the entire module was written in Python, but its migration to languages such as C++ could further improve its capacity and integration with mesh processing libraries.
+
+\subsubsection{Improvement of the design of the long extruder and the heating system}
+
+Although the extruder design used during non-planar printing proved effective in demonstrating the viability of non-planar printing, this design is far from what an extruder used for functional parts should be. 
+Understanding the dynamics of the molten polymer inside the extruder is essential to adapt the movements of the conventional 3D printer to the new extruder design.
+In addition, the extruder itself should be simpler and have an internal geometry that facilitates fluid extrusion. 
+To achieve this, it is necessary to redesign the extruder and, above all, its connection to the printer's hot block. 
+However, the most essential task for further developing this printing method is to improve the tube's heating system. 
+Ideally, this should be integrated into the tube itself or find some way to heat the tube without the need for coiling. 
+During the development of the use case, it was proposed to use a thermal sleeve to wrap the extruder, but the thermal sleeves available are too large to be used on a needle. 
+However, the coil requires dealing with the ends of the thread that are not attached to the coil and hinder printing. Therefore, a new heating method is essential.
+Also, the thermodynamics of the tube with the heating system should be studied, as it may be possible to simplify the heating system by not having to heat the entire needle to ensure proper extrusion.
+
+\subsubsection{Development of an open-source algorithm for generating random lattice structures}
+
+During the development of the second use case, the difficulty encountered in obtaining the solid mesh of the proposed structure due to its complex topology was demonstrated. 
+It was observed that conventional software fails to generate such a solid mesh due to the algorithms they use to solve intersections between surfaces. 
+Therefore, it was necessary to resort to commercial software specialised in implicit modelling, which allowed the structure's mesh to be generated and simulated. 
+Once the solid mesh was obtained with this software, conventional software failed to process the mesh during its simulation using finite elements.  
+In addition, this software was inefficient when working with such large meshes, and its efficiency could be improved by solutions that rely on the computational power provided by the GPU.
+ 
+That is why there is a need for an open-source algorithm based on implicit modelling using operations that can be performed on the GPU. 
+This would facilitate the use of the algorithm and other work based on the use of random lattice structures.
+
+\subsubsection{Hybrid bioprinting using stochastic structures}
+
+The proposed structures have proven to be good candidates for the manufacture of bone scaffolds, overcoming the drawbacks of the structures used today. 
+However, existing bio-inks are not capable of generating structures with mechanical strength similar to that of human bone, and therefore cannot be used to create such structures. 
+Therefore, it is proposed to use the proposed structures to generate the scaffolds on which to deposit the bio-inks during printing. 
+This would allow us to benefit from the best of both worlds. 
+If a structure is to be resistant, it cannot be made with materials containing living cells. 
+However, they cannot serve as a biological solution on their own due to the high temperatures required for printing.
+ 
+Taking advantage of the fact that the proposed structures can be separated into layers of tetrahedra, it is proposed to investigate their compatibility for use with bio-inks by depositing the bio-ink on each layer once printed. 
+In addition, this proposal could include non-planar printing to print the layers to improve their strength.
+
+\subsubsection{Development and improvement of the manufacture of random lattice structures with metallic materials using non-powder-based methods}
+
+
+Although the technology used to manufacture the part was effective in the sense that it was possible to produce a design similar to that generated by the algorithm, this technology is still far from being able to manufacture parts that can be used in service. 
+It is necessary to continue developing printing strategies for this type of structure using this method. 
+The ASLM has a very positive aspect in that it eliminates the presence of layers in the final structure, giving it greater strength. 
+The problem is that it achieves this by cutting each of the bars according to its length.
+This makes the treatment of the nodes very complex. With this in mind, the manufacturing limitations of the nodes should be analysed in order to adapt the algorithm to these limitations. 
+When the development of this project began, the algorithm was not designed with the intention of using a manufacturing method such as ASLM. 
+Therefore, connection limitations were not included in the nodes. 
+This means that there may be nodes with many connections and that the edges converge at the nodes with very sharp angles between them. 
+These conditions make the topology of the nodes very complex and, therefore, difficult to print using ASLM in its current state. 
+This problem was also addressed during the development of non-planar printing in this work. 
+It was also the reason why no meshing software was able to mesh the structure, and implicit design software had to be used.
+Therefore, not only should the connections at the nodes be improved, but ASLM should also be improved in order to obtain better manufacturing quality of the nodes. 
+Alternatively, another manufacturing method, such as WAAM, could be explored.
+\end{document}

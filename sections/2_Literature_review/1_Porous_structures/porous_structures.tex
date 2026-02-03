@@ -26,12 +26,12 @@ Voronoi diagrams are a resource used by many studios to generate stochastic stru
 The general procedure used is to fill a design space with random points (called seeds), generate Voronoi volumes from these seeds and generate a structure from the intersection of the different Voronoi volumes \cite{polym16142027}. 
 The difference between each study lies mainly in the way these seeds are generated.
 Piros et al. \cite{Das2017} imported the 3D model into a larger space, in which seed points are randomly placed and Voronoi cells are generated.
-From these, they calculate the intersection between the initial geometry and the Voronoi cells and thus obtain the filling of the initial structure,\textbf{ as shown in Figure 3.}
+From these, they calculate the intersection between the initial geometry and the Voronoi cells and thus obtain the filling of the initial structure.
 Other authors generate seed points randomly according to the desired final pore size \cite{Liu2021, coatings12101373, Zhang2019, Abdullahi2019}.
-Alsheghri et al. \cite{VLAD2020110658}, Vlad et al. \cite{ALSHEGHRI2021112010}, and Gómez et al. \cite{GOMEZ2016341} base the location of the seed points on information extracted from bone by micro-computed tomography (µCT). 
+Alsheghri et al. \cite{VLAD2020110658}, Vlad et al. \cite{ALSHEGHRI2021112010}, and Gómez et al. \cite{GOMEZ2016341} base the location of the seed points on information extracted from bone by micro-computed tomography ($\mu$CT). 
 
-Other authors use µCT to generate porous structures from other structures. 
-The methodology used is the same in all articles and consists of scanning a porous structure by µCT to obtain its 3D CAD model.
+Other authors use $\mu$CT to generate porous structures from other structures. 
+The methodology used is the same in all articles and consists of scanning a porous structure by $\mu$CT to obtain its 3D CAD model.
 What differentiates each approach is the type of structure that is scanned \cite{polym16142027}.
 Baino et al. \cite{ceramics5030044} use the tomographic reconstruction of a polyurethane sponge. 
 Baino et al. \cite{jace17843} obtained 3D porous scaffolds resembling the architecture of cancellous bone.
@@ -49,7 +49,7 @@ Sharif Ullah et al. \cite{Sharif_Ullah02012018} created an annular porous struct
 Zhang et al. \cite{Zhang2019} generate reticular structures, but add a step to homogenise the structure obtained after joining the points.
 By calculating the Coulomb repulsion and Hooke attraction forces for each node, they aim to find the equilibrium positions and thus optimise the structure.
 
-Although advanced computational methods have emerged, such as stochastic topological optimisation, evolutionary algorithms, and machine learning-assisted generative design, which seek to balance biological realism and desired mechanical properties \cite{7829422, SIEGKAS2022110858, ZHANG20253684}. 
+Despite the advent of advanced computational techniques like stochastic topological optimization, evolutionary algorithms, and machine learning-aided generative design, these methods aim to harmonize biological accuracy with the required mechanical characteristics \cite{7829422, SIEGKAS2022110858, ZHANG20253684}. 
 However, despite the diversity of techniques, common limitations persist: the difficulty of simultaneously controlling biomimicry and manufacturability, the appearance of intersections or non-printable geometries, and the lack of explicit criteria to ensure that the generated designs are self-sustaining \cite{YAMADA2025113657}.
 In this regard, the field demands approaches capable of combining the morphological richness of stochastic methods with geometric constraints that ensure their manufacturability.
 

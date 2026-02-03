@@ -1,7 +1,8 @@
 \documentclass[../../../main.tex]{subfiles}
 \begin{document}
 
-This subsection proposes a methodology based on the previous one. Starting from points distributed at the base of the volume, points are generated at a suitable distance and location from which new ones are generated. 
+This section proposes a modification of the methodology mentioned above with the intention of reducing the density of points and ensuring all connections.
+Starting from points distributed at the base of the volume, points are generated at a suitable distance and location from which new ones are generated. 
 This method does not use initial random points distributed throughout the volume, but generates all the points it uses from others.
 In this way, points are generated randomly but only using those that are valid a priori.
 
@@ -44,7 +45,7 @@ N_{t} \approx N_0\cdot\lambda^t.
 As the search radius influences the number of points retrieved, the larger the radius, the greater the number of points retrieved and, therefore, the greater the probability of generating connections and, consequently, the lower the $E[G(p)]$.
 Thus, there must be a radius at which $E[G(p)] \leq 1$ and the algorithm would finish at some point.
 However, this minimum radius cannot be determined beforehand because it depends on several factors, such as the volume's topology, dimensionality, and the number of points, among others.
-\textcolor{blue}{Figure} \ref{fig:esperanza} shows the variation in the expected values as a function of radius for a 3x4 \textit{mm} cylinder.
+\cref{fig:esperanza} shows the variation in the expected values as a function of radius isnide a 3x4 \textit{mm} cylinder.
 It can be noticed that the sum of the expected values is not equal to four because the points on the surface cannot be connected to four other points. 
 After all, two of them would lie outside the volume.
 In this example, the minimum radius for the algorithm to finish is $\simeq 12\%$ of the volume's height.
@@ -53,7 +54,7 @@ Beneath that value, the number of points grows exponentially, and the algorithm 
 \begin{figure}
     \centering
     \includegraphics[width=0.9\textwidth]{imgs/esperanzas.png}
-    \caption{Variation of expected values as a function of the chosen radius.}
+    \caption{Variation of expected values as a function of the chosen radius, r.}
     \label{fig:esperanza}
 \end{figure}
 
@@ -71,15 +72,15 @@ In the next section, a function that has been implemented to solve the problem o
 
 \begin{figure}
     \centering
-    \\includegraphics[width=0.9\textwidth]{imgs/color_nodes.svg.pdf}
-    \caption{Connectivity of the example structure.}
+    \includegraphics[width=0.9\textwidth]{imgs/color_nodes.pdf}
+    \caption{Connectivity of the example structure. Each node is coloured according to its connectivity, following the colormap shown next to the nodal connectivity distribution.}
     \label{fig:color_nodes}
 \end{figure}
 
 \begin{figure}
     \centering
-    \\includegraphics[width=0.9\textwidth]{imgs/lengths.svg.pdf}
-    \caption{Edge length dispersion in the example structure.}
+    \includegraphics[width=0.9\textwidth]{imgs/lengths.pdf}
+    \caption{Edge length dispersion in the example structure. Each edge is coloured according to its length, following the colormap shown next to the length distribution.}
     \label{fig:lengths}
 \end{figure}
 

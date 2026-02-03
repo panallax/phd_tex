@@ -1,0 +1,28 @@
+\documentclass[../../main.tex]{subfiles}
+
+\begin{document}
+
+
+\newenvironment{abstracto}[1]%
+{
+    \cleardoublepage
+    \thispagestyle{empty}
+
+    \begin{center}
+        {\color{nebrijaRed}%
+         \fontsize{30pt}{36pt}\selectfont\bfseries #1}
+    \end{center}
+    \vspace{2cm}
+}
+{\vfill\null}
+
+\begin{abstracto}{Abstract}
+
+\subfile{abstract_eng}
+\end{abstracto}
+
+\begin{abstracto}{Resumen}
+\subfile{abstract_esp}
+\end{abstracto}
+
+\end{document}

@@ -2,57 +2,78 @@
 \input{preamble}
 
 \begin{document}
-\tableofcontents
-\newpage
 
-\listoffigures
-\newpage
+\input{sections/Portada/portada}
+\input{sections/Portada_2/portada_2}
 
-\listoftables
-\newpage
+\frontmatter
 
+% \pagestyle{empty} % sin encabezado ni pie
+
+% \thispagestyle{empty}
+
+\vspace*{0.2\textheight} 
+% \vspace*{\fill} 
+% \begin{center}
+%   {\fontsize{20}{20}\selectfont
+%    \scshape   % versalitas para un aspecto elegante
+%    \textls[70]{Be free — the way all code should be.}
+%   }
+% \end{center}
+\begin{flushright}
+  \itshape{Be free — the way all code should be.}
+  
+\end{flushright}
+\vspace*{\fill}
+\clearpage
+\input{sections/Agradecimientos/agradecimientos}
+
+\subfile{sections/Abstract/abstract}
+
+
+\makeatother
+\begingroup
+  \hypersetup{linkcolor=black}
+  \tableofcontents
+  \listoffigures
+  \listoftables
+\endgroup
 
 \mainmatter
 
 
-\pagestyle{fancy}
-\fancyhf{}
-\fancyhead[CO]{\leftmark}
-\fancyhead[CE]{\rightmark}
-\fancyfoot[LE,RO]{\thepage}
-
-Main body
-
-\chapter{Motivation and Objectives}
+\part{Background and Research Objectives}
+\chapter{Introduction}
 \subfile{sections/1_Motivation_and_objectives/motivation_and_objectives}
-\newpage
 
-\chapter{Literature Review}
+\part{State of the Art}
+\chapter{State of the Art}
 \subfile{sections/2_Literature_review/literature_review}
-\newpage
 
-\chapter{Methodology: Part I}
-\subfile{sections/3_Methodology_1/methodology_1}
-\newpage
+\part{Methodology}
+\chapter{Exploration of initial approaches and progressive development}\label{sec:meth_1}
+\subfile{sections/3_Methodology_1/methodology_1}%
 
-\chapter{Methodology: Part II}
+\chapter[Implementation and validation of the final methodology]{Implementation \\ and validation of the final methodology}
 \subfile{sections/4_Methodology_2/methodology_2}
-\newpage
 
-\chapter{Case Studio: Non-planar 3D-printing}
-\subfile{sections/5_Case_studio_1/case_studio_1}
-\newpage
+\part{Results}
+\chapter[Analysis of the performance of the stochastic structure generation algorithm]{Analysis of the \\ performance of the stochastic structure generation algorithm}
+\subfile{sections/5_Results/results}
 
-\chapter{Case Studio: Thruster bracket}
-\subfile{sections/6_Case_studio_2/case_studio_2}
-\newpage
+\part{Case Studies}
+\chapter{Case Study I: Non-planar 3D-printing}
+\subfile{sections/6_Case_studio_1/case_studio_1}
 
+\chapter{Case Study II: Thruster bracket}
+\subfile{sections/7_Case_studio_2/case_studio_2}
+
+\part{Discussion and conclusions}
 \chapter{Discussion and conclusions}
-\subfile{sections/7_Discussion _and_conclusion/discussion_and_conclusion}
-\newpage
+\subfile{sections/8_Discussion _and_conclusion/discussion_and_conclusion}
+
 
 \printbibliography
-
 \clearpage
 \thispagestyle{empty}
 \hfill
